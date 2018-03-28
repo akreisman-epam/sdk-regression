@@ -7,6 +7,12 @@
     </taskdef>
 
     <property name="distDir" location="dist"/>
+    <property name="sdkDir" location="${distDir}/sdk"/>
+    <property name="stepsDir" location="${distDir}/steps"/>
+
+    <property name="sdkGitRepositoryUrl" value="--should-be-overridden--"/>
+    <property name="stepsGitRepositoryUrl" value="--should-be-overridden--"/>
+
     <property name="runStepCommand" value="--should-be-overridden--"/>
     <property name="runStepCommandArgs" value="--should-be-overridden--"/>
 
@@ -19,19 +25,31 @@
     <property name="stepName_getBankCardTransition" value=""/>
     <property name="stepName_listBankCardTransition" value=""/>
 
-    <property name="stepsGitRepositoryUrl" value="--should-be-overridden--"/>
     <property name="hw.username" value="--should-be-overridden--"/>
     <property name="hw.password" value="--should-be-overridden--"/>
     <property name="hw.programToken" value="--should-be-overridden--"/>
 
-    <target name="download-steps">
+    <target name="clean">
         <delete dir="${distDir}"/>
+    </target>
+
+    <target name="download-sdk" depends="clean">
+        <exec executable="git">
+            <arg value="clone" />
+            <arg value="--depth" />
+            <arg value="1" />
+            <arg value="${sdkGitRepositoryUrl}" />
+            <arg value="${sdkDir}" />
+        </exec>
+    </target>
+
+    <target name="download-steps" depends="clean">
         <exec executable="git">
             <arg value="clone" />
             <arg value="--depth" />
             <arg value="1" />
             <arg value="${stepsGitRepositoryUrl}" />
-            <arg value="${distDir}" />
+            <arg value="${stepsDir}" />
         </exec>
     </target>
 
@@ -71,7 +89,7 @@
 
     <target name="stepCreateBankCard">
         <local name="out"/>
-        <exec executable="${runStepCommand}" outputproperty="out">
+        <exec executable="${runStepCommand}" outputproperty="out" dir="${stepsDir}">
             <arg line="${runStepCommandArgs} ${stepName_createBankCard} ${hw.username} ${hw.password} ${hw.programToken} ${hw.userToken}"/>
         </exec>
         <echo message="RESPONSE:"/>
@@ -87,7 +105,7 @@
     <target name="stepGetBankCard">
         <local name="out"/>
         <local name="bankCardType"/>
-        <exec executable="${runStepCommand}" outputproperty="out">
+        <exec executable="${runStepCommand}" outputproperty="out" dir="${stepsDir}">
             <arg line="${runStepCommandArgs} ${stepName_getBankCard} ${hw.username} ${hw.password} ${hw.programToken} ${hw.userToken} ${hw.bankCardToken}"/>
         </exec>
         <echo message="RESPONSE:"/>
@@ -108,7 +126,7 @@
     <target name="stepListBankCard">
         <local name="out"/>
         <local name="count"/>
-        <exec executable="${runStepCommand}" outputproperty="out">
+        <exec executable="${runStepCommand}" outputproperty="out" dir="${stepsDir}">
             <arg line="${runStepCommandArgs} ${stepName_listBankCard} ${hw.username} ${hw.password} ${hw.programToken} ${hw.userToken}"/>
         </exec>
         <echo message="RESPONSE:"/>
@@ -129,8 +147,8 @@
     <target name="stepUpdateBankCard">
         <local name="out"/>
         <local name="dateOfExpiry"/>
-        <exec executable="${runStepCommand}" outputproperty="out">
-            <arg line="${runStepCommandArgs} ${stepName_updateBankCard} ${hw.username} ${hw.password} ${hw.programToken} ${hw.userToken} ${hw.bankCardToken} UTC2030-12"/>
+        <exec executable="${runStepCommand}" outputproperty="out" dir="${stepsDir}">
+            <arg line="${runStepCommandArgs} ${stepName_updateBankCard} ${hw.username} ${hw.password} ${hw.programToken} ${hw.userToken} ${hw.bankCardToken} 2030-12"/>
         </exec>
         <echo message="RESPONSE:"/>
         <echo message="${out}"/>
@@ -150,7 +168,7 @@
     <target name="stepDeactivateBankCard">
         <local name="out"/>
         <local name="toStatus"/>
-        <exec executable="${runStepCommand}" outputproperty="out">
+        <exec executable="${runStepCommand}" outputproperty="out" dir="${stepsDir}">
             <arg line="${runStepCommandArgs} ${stepName_deactivateBankCard} ${hw.username} ${hw.password} ${hw.programToken} ${hw.userToken} ${hw.bankCardToken}"/>
         </exec>
         <echo message="RESPONSE:"/>
