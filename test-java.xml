@@ -1,0 +1,30 @@
+<project name="Hyperwallet api java test" default="dist" basedir=".">
+
+    <property name="distDir" location="dist"/>
+
+    <property name="stepsGitRepositoryUrl" value="https://github.com/akreisman-epam/java-sdk-examples.git"/>
+    <property name="runStepCommand" value="java"/>
+    <property name="runStepCommandArgs" value="-classpath &quot;${distDir}/target/sdk-examples-0.3.0-SNAPSHOT.jar:${distDir}/target/lib/*&quot; "/>
+
+    <property name="stepName_createBankCard" value="com.hyperwallet.example.bankcard.CreateBankCard"/>
+    <property name="stepName_getBankCard" value="com.hyperwallet.example.bankcard.RetrieveBankCard"/>
+    <property name="stepName_listBankCard" value="com.hyperwallet.example.bankcard.ListBankCards"/>
+    <property name="stepName_updateBankCard" value="com.hyperwallet.example.bankcard.UpdateBankCard"/>
+    <property name="stepName_deactivateBankCard" value="com.hyperwallet.example.bankcard.DeactivateBankCard"/>
+
+    <import file="test-scenario.xml"/>
+
+    <target name="init" depends="download-steps">
+        <exec executable="mvn">
+            <arg value="-f"/>
+            <arg value="${distDir}"/>
+            <arg value="clean"/>
+            <arg value="install"/>
+        </exec>
+    </target>
+
+    <target name="dist" depends="init, testApi">
+
+    </target>
+
+</project>

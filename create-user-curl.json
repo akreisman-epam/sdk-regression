@@ -1,0 +1,14 @@
+{
+    "addressLine1": "575 Market Street",
+    "city": "San Francisco",
+    "clientUserId": "U${touchTime}",
+    "country": "US",
+    "dateOfBirth": "1991-01-01",
+    "email": "user${touchTime}@hyperwallet.com",
+    "firstName": "Some",
+    "lastName": "Guy",
+    "postalCode": "94105",
+    "profileType": "INDIVIDUAL",
+    "programToken": "${hw.programToken}",
+    "stateProvince": "CA"
+}

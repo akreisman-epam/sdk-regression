@@ -1,0 +1,175 @@
+<project name="Hyperwallet sdk api test" default="testApi" basedir=".">
+
+    <taskdef resource="net/sf/antcontrib/antcontrib.properties">
+        <classpath>
+            <pathelement location="./lib/ant-contrib.jar"/>
+        </classpath>
+    </taskdef>
+
+    <property name="distDir" location="dist"/>
+    <property name="runStepCommand" value="--should-be-overridden--"/>
+    <property name="runStepCommandArgs" value="--should-be-overridden--"/>
+
+    <property name="stepName_createBankCard" value=""/>
+    <property name="stepName_getBankCard" value=""/>
+    <property name="stepName_listBankCard" value=""/>
+    <property name="stepName_updateBankCard" value=""/>
+    <property name="stepName_deactivateBankCard" value=""/>
+    <property name="stepName_createBankCardTransition" value=""/>
+    <property name="stepName_getBankCardTransition" value=""/>
+    <property name="stepName_listBankCardTransition" value=""/>
+
+    <property name="stepsGitRepositoryUrl" value="--should-be-overridden--"/>
+    <property name="hw.username" value="--should-be-overridden--"/>
+    <property name="hw.password" value="--should-be-overridden--"/>
+    <property name="hw.programToken" value="--should-be-overridden--"/>
+
+    <target name="download-steps">
+        <delete dir="${distDir}"/>
+        <exec executable="git">
+            <arg value="clone" />
+            <arg value="--depth" />
+            <arg value="1" />
+            <arg value="${stepsGitRepositoryUrl}" />
+            <arg value="${distDir}" />
+        </exec>
+    </target>
+
+    <target name="createUser">
+        <tstamp>
+            <format property="touchTime" pattern="yyyyMMddhhmmss"/>
+        </tstamp>
+        <loadfile
+                property="createUserBody"
+                srcFile="create-user-curl.json">
+            <filterchain>
+                <expandproperties/>
+            </filterchain>
+        </loadfile>
+        <exec executable="curl" outputproperty="userResp">
+            <arg value="-X"/>
+            <arg value="POST"/>
+            <arg value="https://api.sandbox.hyperwallet.com/rest/v3/users"/>
+            <arg value="-u"/>
+            <arg value="${hw.username}:${hw.password}"/>
+            <arg value="-H"/>
+            <arg value="Content-Type: application/json"/>
+            <arg value="-H"/>
+            <arg value="Accept: application/json"/>
+            <arg value="-d"/>
+            <arg value="${createUserBody}"/>
+        </exec>
+        <echo message="RESPONSE:"/>
+        <echo message="${userResp}"/>
+        <propertyregex property="hw.userToken"
+                       input="${userResp}"
+                       regexp=".*&quot;token&quot;\s*:\s*&quot;([^&quot;]*)"
+                       select="\1" />
+        <echo message="User created: ${hw.userToken}"/>
+        <fail unless="hw.userToken"/>
+    </target>
+
+    <target name="stepCreateBankCard">
+        <local name="out"/>
+        <exec executable="${runStepCommand}" outputproperty="out">
+            <arg line="${runStepCommandArgs} ${stepName_createBankCard} ${hw.username} ${hw.password} ${hw.programToken} ${hw.userToken}"/>
+        </exec>
+        <echo message="RESPONSE:"/>
+        <echo message="${out}"/>
+        <propertyregex property="hw.bankCardToken"
+                       input="${out}"
+                       regexp=".*&quot;token&quot;\s*:\s*&quot;([^&quot;]*)"
+                       select="\1" />
+        <echo message="Bank Card created: ${hw.bankCardToken}"/>
+        <fail unless="hw.bankCardToken"/>
+    </target>
+
+    <target name="stepGetBankCard">
+        <local name="out"/>
+        <local name="bankCardType"/>
+        <exec executable="${runStepCommand}" outputproperty="out">
+            <arg line="${runStepCommandArgs} ${stepName_getBankCard} ${hw.username} ${hw.password} ${hw.programToken} ${hw.userToken} ${hw.bankCardToken}"/>
+        </exec>
+        <echo message="RESPONSE:"/>
+        <echo message="${out}"/>
+        <propertyregex property="bankCardType"
+                       input="${out}"
+                       regexp=".*&quot;type&quot;\s*:\s*&quot;([^&quot;]*)"
+                       select="\1" />
+        <fail message="${bankCardType} does not equal to BANK_CARD">
+            <condition>
+                <not>
+                    <equals arg1="${bankCardType}" arg2="BANK_CARD"/>
+                </not>
+            </condition>
+        </fail>
+    </target>
+
+    <target name="stepListBankCard">
+        <local name="out"/>
+        <local name="count"/>
+        <exec executable="${runStepCommand}" outputproperty="out">
+            <arg line="${runStepCommandArgs} ${stepName_listBankCard} ${hw.username} ${hw.password} ${hw.programToken} ${hw.userToken}"/>
+        </exec>
+        <echo message="RESPONSE:"/>
+        <echo message="${out}"/>
+        <propertyregex property="count"
+                       input="${out}"
+                       regexp=".*&quot;count&quot;\s*:\s*([0-9]*)"
+                       select="\1" />
+        <fail message="${count} does not equal to 1">
+            <condition>
+                <not>
+                    <equals arg1="${count}" arg2="1"/>
+                </not>
+            </condition>
+        </fail>
+    </target>
+
+    <target name="stepUpdateBankCard">
+        <local name="out"/>
+        <local name="dateOfExpiry"/>
+        <exec executable="${runStepCommand}" outputproperty="out">
+            <arg line="${runStepCommandArgs} ${stepName_updateBankCard} ${hw.username} ${hw.password} ${hw.programToken} ${hw.userToken} ${hw.bankCardToken} UTC2030-12"/>
+        </exec>
+        <echo message="RESPONSE:"/>
+        <echo message="${out}"/>
+        <propertyregex property="dateOfExpiry"
+                       input="${out}"
+                       regexp=".*&quot;dateOfExpiry&quot;\s*:\s*&quot;([^&quot;]*)"
+                       select="\1" />
+        <fail message="${dateOfExpiry} does not equal to 2030-12">
+            <condition>
+                <not>
+                    <equals arg1="${dateOfExpiry}" arg2="2030-12"/>
+                </not>
+            </condition>
+        </fail>
+    </target>
+
+    <target name="stepDeactivateBankCard">
+        <local name="out"/>
+        <local name="toStatus"/>
+        <exec executable="${runStepCommand}" outputproperty="out">
+            <arg line="${runStepCommandArgs} ${stepName_deactivateBankCard} ${hw.username} ${hw.password} ${hw.programToken} ${hw.userToken} ${hw.bankCardToken}"/>
+        </exec>
+        <echo message="RESPONSE:"/>
+        <echo message="${out}"/>
+        <propertyregex property="toStatus"
+                       input="${out}"
+                       regexp=".*&quot;toStatus&quot;\s*:\s*&quot;([^&quot;]*)"
+                       select="\1" />
+        <fail  message="${toStatus} does not equal to DE_ACTIVATED">
+            <condition>
+                <not>
+                    <equals arg1="${toStatus}" arg2="DE_ACTIVATED"/>
+                </not>
+            </condition>
+        </fail>
+    </target>
+
+    <target name="testBankCard" depends="createUser, stepCreateBankCard, stepGetBankCard, stepListBankCard, stepUpdateBankCard, stepDeactivateBankCard"/>
+
+    <target name="testApi" depends="testBankCard"/>
+
+</project>
