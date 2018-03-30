@@ -14,6 +14,9 @@
     <property name="stepName_listBankCard" value="src/bankcard/list-bank-cards.js"/>
     <property name="stepName_updateBankCard" value="src/bankcard/update-bank-card.js"/>
     <property name="stepName_deactivateBankCard" value="src/bankcard/deactivate-bank-card.js"/>
+    <property name="stepName_createBankCardStatusTransition" value="src/bankcard/create-bank-card-transition.js"/>
+    <property name="stepName_getBankCardStatusTransition" value="src/bankcard/get-bank-card-transition.js"/>
+    <property name="stepName_listBankCardStatusTransitions" value="src/bankcard/list-bank-card-transitions.js"/>
 
     <import file="test-scenario.xml"/>
 
