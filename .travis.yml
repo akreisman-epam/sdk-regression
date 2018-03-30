@@ -6,5 +6,4 @@ services:
   - docker
 
 before_install:
-- docker pull 531662794at/centosjava
-- docker run -it 531662794at/centosjava ant -f /app/test-node.xml -Dhw.username=restapiuser@12411231611 -Dhw.password=Epam123456 -Dhw.programToken=prg-7865978f-3a15-4d64-9a63-aedfa33c3d9d
+- docker run 531662794at/centosjava2
