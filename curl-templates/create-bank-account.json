@@ -1,0 +1,9 @@
+{
+  "bankAccountId": "${touchTime}",
+  "bankAccountPurpose": "CHECKING",
+  "bankAccountRelationship": "SELF",
+  "branchId": "026009593",
+  "transferMethodCountry": "US",
+  "transferMethodCurrency": "USD",
+  "type": "BANK_ACCOUNT"
+}
