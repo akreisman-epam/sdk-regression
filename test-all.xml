@@ -1,0 +1,8 @@
+<project name="Hyperwallet api test" default="testAll" basedir=".">
+
+    <target name="testAll">
+        <ant antfile="test-java.xml"/>
+        <ant antfile="test-node.xml"/>
+    </target>
+
+</project>
