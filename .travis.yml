@@ -5,5 +5,11 @@ language: generic
 services:
   - docker
 
+  secure: "g6NOMz1Ml8pg92t+NZNxi26Ek56Q+c61zZY5hNjcg+M7id9Wa9tqPevww3GVJdVOBhtLtVNoXIEikAQjznCXzr+CYeSaVcsVK+gl0vuqZZqdBCk6dlZxxmCJvhmcziyDSNSIrNk5/R6u2dxm8RBtQxAnhxlDpvii4+XvjF0BVa6nvcAhWc8gu70dK14uN9uVcBjsULPz4aFwtS1zRJAs5NwB4TTtil/AgX+1rU+4viscOKapUJaBauctfmpXsu3vK5z6UKTYX+bl8S5UaQ5CYlwPoz0XkJdhnOHMhpo7DHkmhVXm2RBzrLbkIgoANQ2gCehFiyQ1QKpSiYyfYbXHzDuR9U7Q316p8rV/ddVX1Tt/sd57kyh4nfIWsK18ge69C8TnJEuZVfHp8g2qSSaAKy0es4W/e1LxcG9gsG9A/FuQmX/Gu4s5b5787fM/ZlWzmVaiCqXBDwbtmyCLpUPi82wcdDSxb/g6NEtbFVQx43q/I8XPhF9DPc1OTjnriUBYEYaHnzCWg5TnSUHlj1eI7uFd7xxqW5dnXDuxPOJ/ZXgxgoqawp6rUB1KhWvKRqtQUwC9zOmKqfhI/RiUXOhsWx9lMEcJrOo4d2lHSHYcnpKKRYKz1J7dcT8Ez2VFs9Q/aFplWHH9ifo5JVGWxzAS/7VaroIKJ1QhwxIFNLQpbdY="
+
+
 before_install:
-- docker run 531662794at/centosjava2
+- docker pull 531662794at/centosjava
+- docker run -it 531662794at/centosjava ant -f /app/test-node.xml -Dhw.username=restapiuser@12411231611 -Dhw.password=${path} -Dhw.programToken=prg-7865978f-3a15-4d64-9a63-aedfa33c3d9d
+
+
