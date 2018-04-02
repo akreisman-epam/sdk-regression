@@ -17,6 +17,18 @@
     <property name="stepName_createBankCardStatusTransition" value="src/bankcard/create-bank-card-transition.js"/>
     <property name="stepName_getBankCardStatusTransition" value="src/bankcard/get-bank-card-transition.js"/>
     <property name="stepName_listBankCardStatusTransitions" value="src/bankcard/list-bank-card-transitions.js"/>
+    <property name="stepName_createPaperCheck" value="src/papercheck/create-paper-check.js"/>
+    <property name="stepName_getPaperCheck" value="src/papercheck/get-paper-check.js"/>
+    <property name="stepName_listPaperCheck" value="src/papercheck/list-paper-checks.js"/>
+    <property name="stepName_updatePaperCheck" value="src/papercheck/update-paper-check.js"/>
+    <property name="stepName_deactivatePaperCheck" value="src/papercheck/deactivate-paper-check.js"/>
+    <property name="stepName_createPaperCheckStatusTransition" value="src/papercheck/create-paper-check-transition.js"/>
+    <property name="stepName_getPaperCheckStatusTransition" value="src/papercheck/get-paper-check-transition.js"/>
+    <property name="stepName_listPaperCheckStatusTransitions" value="src/papercheck/list-paper-check-transitions.js"/>
+    <property name="stepName_getBankAccountStatusTransition" value="src/bankaccount/get-bank-account-transition.js"/>
+    <property name="stepName_createPaymentStatusTransition" value="src/payment/create-payment-transition.js"/>
+    <property name="stepName_getPaymentStatusTransition" value="src/payment/get-payment-transition.js"/>
+    <property name="stepName_listPaymentStatusTransitions" value="src/payment/list-payment-transitions.js"/>
 
     <import file="test-scenario.xml"/>
 
