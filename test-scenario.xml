@@ -669,12 +669,24 @@
     <!--            -->
 
 
-    <target name="testBankCards" depends="stepCreateBankCard, stepGetBankCard, stepListBankCard, stepUpdateBankCard, stepDeactivateBankCard, stepCreateBankCardStatusTransition, stepGetBankCardStatusTransition, stepListBankCardStatusTransition"/>
-    <target name="testPaperChecks" depends="stepCreatePaperCheck, stepGetPaperCheck, stepListPaperCheck, stepUpdatePaperCheck, stepDeactivatePaperCheck, stepCreatePaperCheckStatusTransition, stepGetPaperCheckStatusTransition, stepListPaperCheckStatusTransition"/>
-    <target name="testBankAccounts" depends="stepGetBankAccountStatusTransition"/>
-    <target name="testPrepaidCards"/>
-    <target name="testPayments" depends="stepCreatePaymentStatusTransition"/>
+    <target name="testBankCards">
+        <echo message="No tests"/>
+    </target>
+    <target name="testPaperChecks">
+        <echo message="No tests"/>
+    </target>
+    <target name="testBankAccounts">
+        <echo message="No tests"/>
+    </target>
+    <target name="testPrepaidCards">
+        <echo message="No tests"/>
+    </target>
+    <target name="testPayments">
+        <echo message="No tests"/>
+    </target>
 
     <target name="testApi" depends="testBankCards, testPaperChecks, testBankAccounts, testPrepaidCards, testPayments"/>
+
+    <target name="dist" depends="init, testApi"/>
 
 </project>

@@ -33,11 +33,5 @@
     </target>
 
     <target name="testBankCards" depends="createUser, stepCreateBankCard, stepGetBankCard, stepListBankCard, stepUpdateBankCard"/>
-    <target name="testPaperChecks"/>
-    <target name="testBankAccounts"/>
-    <target name="testPrepaidCards"/>
-    <target name="testPayments"/>
-
-    <target name="dist" depends="init, testApi"/>
 
 </project>

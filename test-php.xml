@@ -1,0 +1,32 @@
+<project name="Hyperwallet api php test" default="dist" basedir=".">
+
+    <property name="distDir" location="dist"/>
+    <property name="sdkDir" location="${distDir}/php-sdk"/>
+    <property name="stepsDir" location="${distDir}/steps"/>
+
+    <property name="sdkGitRepositoryUrl" value="https://github.com/akreisman-epam/php-sdk.git"/>
+    <property name="stepsGitRepositoryUrl" value="https://github.com/akreisman-epam/php-sdk-examples.git"/>
+    <property name="runStepCommand" value="php"/>
+    <property name="runStepCommandArgs" value=" "/>
+
+    <property name="stepName_getBankAccountStatusTransition" value="src/bankaccount/get-bank-account-transition.php"/>
+
+    <property name="stepName_createPaymentStatusTransition" value="src/payment/create-payment-transition.php"/>
+    <property name="stepName_getPaymentStatusTransition" value="src/payment/get-payment-transition.php"/>
+    <property name="stepName_listPaymentStatusTransitions" value="src/payment/list-payment-transitions.php"/>
+
+    <import file="test-scenario.xml"/>
+
+    <target name="init" depends="download-sdk, download-steps">
+        <exec executable="composer" dir="${sdkDir}">
+            <arg value="install"/>
+        </exec>
+        <exec executable="composer" dir="${stepsDir}">
+            <arg value="install"/>
+        </exec>
+    </target>
+
+    <target name="testBankAccounts" depends="stepGetBankAccountStatusTransition"/>
+    <target name="testPayments" depends="stepCreatePaymentStatusTransition"/>
+
+</project>
