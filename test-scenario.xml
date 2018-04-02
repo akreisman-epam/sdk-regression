@@ -34,6 +34,12 @@
     <property name="stepName_getPaperCheckStatusTransition" value=""/>
     <property name="stepName_listPaperCheckStatusTransitions" value=""/>
 
+    <property name="stepName_getBankAccountStatusTransition" value=""/>
+
+    <property name="stepName_createPaymentStatusTransition" value=""/>
+    <property name="stepName_getPaymentStatusTransition" value=""/>
+    <property name="stepName_listPaymentStatusTransitions" value=""/>
+
     <property name="hw.username" value="--should-be-overridden--"/>
     <property name="hw.password" value="--should-be-overridden--"/>
     <property name="hw.programToken" value="--should-be-overridden--"/>
@@ -63,6 +69,7 @@
     </target>
 
     <target name="createUser">
+        <local name="touchTime"/>
         <tstamp>
             <format property="touchTime" pattern="yyyyMMddhhmmss"/>
         </tstamp>
@@ -96,7 +103,7 @@
         <fail unless="hw.userToken"/>
     </target>
 
-    <target name="createBankCard">
+    <target name="createBankCard" if="hw.userToken">
         <loadfile
                 property="createBankCardBody"
                 srcFile="curl-templates/create-bank-card.json">
@@ -127,7 +134,7 @@
         <fail unless="hw.bankCard2Token"/>
     </target>
 
-    <target name="createPaperCheck">
+    <target name="createPaperCheck" if="hw.userToken">
         <loadfile
                 property="createPaperCheckBody"
                 srcFile="curl-templates/create-paper-check.json">
@@ -158,39 +165,75 @@
         <fail unless="hw.paperCheck2Token"/>
     </target>
 
-    <!--<target name="createBankAccount" if="hw.userToken">-->
-        <!--<tstamp>-->
-            <!--<format property="touchTime" pattern="yyyyMMddhhmmss"/>-->
-        <!--</tstamp>-->
-        <!--<loadfile-->
-                <!--property="createBankAccountBody"-->
-                <!--srcFile="create-bank-account.json">-->
-            <!--<filterchain>-->
-                <!--<expandproperties/>-->
-            <!--</filterchain>-->
-        <!--</loadfile>-->
-        <!--<exec executable="curl" outputproperty="bankAccountResp">-->
-            <!--<arg value="-X"/>-->
-            <!--<arg value="POST"/>-->
-            <!--<arg value="https://api.sandbox.hyperwallet.com/rest/v3/users/${hw.userToken}/bank-accounts"/>-->
-            <!--<arg value="-u"/>-->
-            <!--<arg value="${hw.username}:${hw.password}"/>-->
-            <!--<arg value="-H"/>-->
-            <!--<arg value="Content-Type: application/json"/>-->
-            <!--<arg value="-H"/>-->
-            <!--<arg value="Accept: application/json"/>-->
-            <!--<arg value="-d"/>-->
-            <!--<arg value="${createBankAccountBody}"/>-->
-        <!--</exec>-->
-        <!--<echo message="RESPONSE:"/>-->
-        <!--<echo message="${bankAccountResp}"/>-->
-        <!--<propertyregex property="hw.bankAccountToken"-->
-                       <!--input="${bankAccountResp}"-->
-                       <!--regexp=".*&quot;token&quot;\s*:\s*&quot;([^&quot;]*)"-->
-                       <!--select="\1" />-->
-        <!--<echo message="Bank Account created: ${hw.bankAccountToken}"/>-->
-        <!--<fail unless="hw.bankAccountToken"/>-->
-    <!--</target>-->
+    <target name="createBankAccount" if="hw.userToken">
+        <local name="touchTime"/>
+        <tstamp>
+            <format property="touchTime" pattern="yyyyMMddhhmmss"/>
+        </tstamp>
+        <loadfile
+                property="createBankAccountBody"
+                srcFile="curl-templates/create-bank-account.json">
+            <filterchain>
+                <expandproperties/>
+            </filterchain>
+        </loadfile>
+        <exec executable="curl" outputproperty="bankAccountResp">
+            <arg value="-X"/>
+            <arg value="POST"/>
+            <arg value="https://api.sandbox.hyperwallet.com/rest/v3/users/${hw.userToken}/bank-accounts"/>
+            <arg value="-u"/>
+            <arg value="${hw.username}:${hw.password}"/>
+            <arg value="-H"/>
+            <arg value="Content-Type: application/json"/>
+            <arg value="-H"/>
+            <arg value="Accept: application/json"/>
+            <arg value="-d"/>
+            <arg value="${createBankAccountBody}"/>
+        </exec>
+        <echo message="RESPONSE:"/>
+        <echo message="${bankAccountResp}"/>
+        <propertyregex property="hw.bankAccountToken"
+                       input="${bankAccountResp}"
+                       regexp=".*&quot;token&quot;\s*:\s*&quot;([^&quot;]*)"
+                       select="\1" />
+        <echo message="Bank Account created: ${hw.bankAccountToken}"/>
+        <fail unless="hw.bankAccountToken"/>
+    </target>
+
+    <target name="createPayment" if="hw.userToken">
+        <local name="touchTime"/>
+        <tstamp>
+            <format property="touchTime" pattern="yyyy-MM-dd'T'hh:mm:ss" offset="3" unit="month"/>
+        </tstamp>
+        <loadfile
+                property="createPaymentBody"
+                srcFile="curl-templates/create-payment.json">
+            <filterchain>
+                <expandproperties/>
+            </filterchain>
+        </loadfile>
+        <exec executable="curl" outputproperty="paymentResp">
+            <arg value="-X"/>
+            <arg value="POST"/>
+            <arg value="https://api.sandbox.hyperwallet.com/rest/v3/payments"/>
+            <arg value="-u"/>
+            <arg value="${hw.username}:${hw.password}"/>
+            <arg value="-H"/>
+            <arg value="Content-Type: application/json"/>
+            <arg value="-H"/>
+            <arg value="Accept: application/json"/>
+            <arg value="-d"/>
+            <arg value="${createPaymentBody}"/>
+        </exec>
+        <echo message="RESPONSE:"/>
+        <echo message="${paymentResp}"/>
+        <propertyregex property="hw.paymentToken"
+                       input="${paymentResp}"
+                       regexp=".*&quot;token&quot;\s*:\s*&quot;([^&quot;]*)"
+                       select="\1" />
+        <echo message="Payment created: ${hw.paymentToken}"/>
+        <fail unless="hw.paymentToken"/>
+    </target>
 
     <!--            -->
     <!-- BANK CARDS -->
@@ -506,21 +549,131 @@
         <fail message="${count} does not equal to 3">
             <condition>
                 <not>
-                    <equals arg1="${count}" arg2="3"/> <!-- Improve this -->
+                    <equals arg1="${count}" arg2="3"/> <!-- TODO: Improve this -->
                 </not>
             </condition>
         </fail>
     </target>
 
+    <!--              -->
+    <!-- Bank Account -->
+    <!--              -->
+    <target name="stepGetBankAccountStatusTransition" depends="createUser, createBankAccount">
+        <local name="out"/>
+        <local name="toStatus"/>
+        <loadfile
+                property="createBankAccountStatusTransitionBody"
+                srcFile="curl-templates/create-bank-account-status-transition.json">
+            <filterchain>
+                <expandproperties/>
+            </filterchain>
+        </loadfile>
+        <exec executable="curl" outputproperty="out">
+            <arg value="-X"/>
+            <arg value="POST"/>
+            <arg value="https://api.sandbox.hyperwallet.com/rest/v3/users/${hw.userToken}/bank-accounts/${hw.bankAccountToken}/status-transitions"/>
+            <arg value="-u"/>
+            <arg value="${hw.username}:${hw.password}"/>
+            <arg value="-H"/>
+            <arg value="Content-Type: application/json"/>
+            <arg value="-H"/>
+            <arg value="Accept: application/json"/>
+            <arg value="-d"/>
+            <arg value="${createBankAccountStatusTransitionBody}"/>
+        </exec>
+        <propertyregex property="hw.bankAccountStatusTransitionToken"
+                       input="${out}"
+                       regexp=".*&quot;token&quot;\s*:\s*&quot;([^&quot;]*)"
+                       select="\1" />
+        <echo message="Bank Account Status Transaction created: ${hw.bankAccountStatusTransitionToken}"/>
+        <exec executable="${runStepCommand}" outputproperty="out" dir="${stepsDir}">
+            <arg line="${runStepCommandArgs} ${stepName_getBankAccountStatusTransition} ${hw.username} ${hw.password} ${hw.programToken} ${hw.userToken} ${hw.bankAccountToken} ${hw.bankAccountStatusTransitionToken}"/>
+        </exec>
+        <echo message="RESPONSE:"/>
+        <echo message="${out}"/>
+        <propertyregex property="toStatus"
+                       input="${out}"
+                       regexp=".*&quot;toStatus&quot;\s*:\s*&quot;([^&quot;]*)"
+                       select="\1" />
+        <fail message="${toStatus} does not equal to DE_ACTIVATED">
+            <condition>
+                <not>
+                    <equals arg1="${toStatus}" arg2="DE_ACTIVATED"/>
+                </not>
+            </condition>
+        </fail>
+    </target>
+
+    <!--          -->
+    <!-- Payments -->
+    <!--          -->
+    <target name="stepCreatePaymentStatusTransition" depends="createUser, createPayment">
+        <local name="out"/>
+        <exec executable="${runStepCommand}" outputproperty="out" dir="${stepsDir}">
+            <arg line="${runStepCommandArgs} ${stepName_createPaymentStatusTransition} ${hw.username} ${hw.password} ${hw.programToken} ${hw.paymentToken}"/>
+        </exec>
+        <echo message="RESPONSE:"/>
+        <echo message="${out}"/>
+        <propertyregex property="hw.paymentStatusTransitionToken"
+                       input="${out}"
+                       regexp=".*&quot;token&quot;\s*:\s*&quot;([^&quot;]*)"
+                       select="\1" />
+        <echo message="Payment Transition created: ${hw.paymentStatusTransitionToken}"/>
+        <fail unless="hw.paymentStatusTransitionToken"/>
+    </target>
+
+    <!--<target name="stepGetPaymentStatusTransition" depends="stepCreatePaymentStatusTransition">-->
+        <!--<local name="out"/>-->
+        <!--<local name="toStatus"/>-->
+        <!--<exec executable="${runStepCommand}" outputproperty="out" dir="${stepsDir}">-->
+            <!--<arg line="${runStepCommandArgs} ${stepName_getPaymentStatusTransition} ${hw.username} ${hw.password} ${hw.programToken} ${hw.paymentToken} ${hw.paymentStatusTransitionToken}"/>-->
+        <!--</exec>-->
+        <!--<echo message="RESPONSE:"/>-->
+        <!--<echo message="${out}"/>-->
+        <!--<propertyregex property="toStatus"-->
+                       <!--input="${out}"-->
+                       <!--regexp=".*&quot;toStatus&quot;\s*:\s*&quot;([^&quot;]*)"-->
+                       <!--select="\1" />-->
+        <!--<fail message="${toStatus} does not equal to CANCELLED">-->
+            <!--<condition>-->
+                <!--<not>-->
+                    <!--<equals arg1="${toStatus}" arg2="CANCELLED"/>-->
+                <!--</not>-->
+            <!--</condition>-->
+        <!--</fail>-->
+    <!--</target>--> <!-- TODO: clarify "The caller does not have access to the requested resource"-->
+
+    <!--<target name="stepListPaymentStatusTransition" depends="stepCreatePaymentStatusTransition">-->
+        <!--<local name="out"/>-->
+        <!--<local name="count"/>-->
+        <!--<exec executable="${runStepCommand}" outputproperty="out" dir="${stepsDir}">-->
+            <!--<arg line="${runStepCommandArgs} ${stepName_listPaymentStatusTransitions} ${hw.username} ${hw.password} ${hw.programToken} ${hw.paymentToken}"/>-->
+        <!--</exec>-->
+        <!--<echo message="RESPONSE:"/>-->
+        <!--<echo message="${out}"/>-->
+        <!--<propertyregex property="count"-->
+                       <!--input="${out}"-->
+                       <!--regexp=".*&quot;count&quot;\s*:\s*([0-9]*)"-->
+                       <!--select="\1" />-->
+        <!--<fail message="${count} does not equal to 1">-->
+            <!--<condition>-->
+                <!--<not>-->
+                    <!--<equals arg1="${count}" arg2="1"/>-->
+                <!--</not>-->
+            <!--</condition>-->
+        <!--</fail>-->
+    <!--</target>--> <!-- TODO: clarify "The caller does not have access to the requested resource"-->
+
     <!--            -->
     <!--            -->
     <!--            -->
 
+
     <target name="testBankCards" depends="stepCreateBankCard, stepGetBankCard, stepListBankCard, stepUpdateBankCard, stepDeactivateBankCard, stepCreateBankCardStatusTransition, stepGetBankCardStatusTransition, stepListBankCardStatusTransition"/>
     <target name="testPaperChecks" depends="stepCreatePaperCheck, stepGetPaperCheck, stepListPaperCheck, stepUpdatePaperCheck, stepDeactivatePaperCheck, stepCreatePaperCheckStatusTransition, stepGetPaperCheckStatusTransition, stepListPaperCheckStatusTransition"/>
-    <target name="testBankAccounts"/>
+    <target name="testBankAccounts" depends="stepGetBankAccountStatusTransition"/>
     <target name="testPrepaidCards"/>
-    <target name="testPayments"/>
+    <target name="testPayments" depends="stepCreatePaymentStatusTransition"/>
 
     <target name="testApi" depends="testBankCards, testPaperChecks, testBankAccounts, testPrepaidCards, testPayments"/>
 

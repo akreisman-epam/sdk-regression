@@ -27,6 +27,12 @@
     <property name="stepName_getPaperCheckStatusTransition" value="src/papercheck/get-paper-check-transition.js"/>
     <property name="stepName_listPaperCheckStatusTransitions" value="src/papercheck/list-paper-check-transitions.js"/>
 
+    <property name="stepName_getBankAccountStatusTransition" value="src/bankaccount/get-bank-account-transition.js"/>
+
+    <property name="stepName_createPaymentStatusTransition" value="src/payment/create-payment-transition.js"/>
+    <property name="stepName_getPaymentStatusTransition" value="src/payment/get-payment-transition.js"/>
+    <property name="stepName_listPaymentStatusTransitions" value="src/payment/list-payment-transitions.js"/>
+
     <import file="test-scenario.xml"/>
 
     <target name="init" depends="download-sdk, download-steps">
