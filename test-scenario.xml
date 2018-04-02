@@ -357,7 +357,7 @@
         <local name="out"/>
         <local name="toStatus"/>
         <exec executable="${runStepCommand}" outputproperty="out" dir="${stepsDir}">
-            <arg line="${runStepCommandArgs} ${stepName_getBankCardStatusTransition} ${hw.username} ${hw.password} ${hw.programToken} ${hw.userToken} ${hw.bankCard2Token} ${hw.bankCardStatusTransitionToken}"/>
+        <arg line="${runStepCommandArgs} ${stepName_getBankCardStatusTransition} ${hw.username} ${hw.password} ${hw.programToken} ${hw.userToken} ${hw.bankCard2Token} ${hw.bankCardStatusTransitionToken}"/>
         </exec>
         <echo message="RESPONSE:"/>
         <echo message="${out}"/>
@@ -378,7 +378,7 @@
         <local name="out"/>
         <local name="count"/>
         <exec executable="${runStepCommand}" outputproperty="out" dir="${stepsDir}">
-            <arg line="${runStepCommandArgs} ${stepName_listBankCardStatusTransitions} ${hw.username} ${hw.password} ${hw.programToken} ${hw.userToken} ${hw.bankCard2Token}"/>
+        <arg line="${runStepCommandArgs} ${stepName_listBankCardStatusTransitions} ${hw.username} ${hw.password} ${hw.programToken} ${hw.userToken} ${hw.bankCard2Token}"/>
         </exec>
         <echo message="RESPONSE:"/>
         <echo message="${out}"/>
@@ -398,6 +398,7 @@
     <!--              -->
     <!-- PAPER CHECKS -->
     <!--              -->
+
 
     <target name="stepCreatePaperCheck" depends="createUser">
         <local name="out"/>
@@ -667,7 +668,6 @@
     <!--            -->
     <!--            -->
     <!--            -->
-
 
     <target name="testBankCards" depends="stepCreateBankCard, stepGetBankCard, stepListBankCard, stepUpdateBankCard, stepDeactivateBankCard, stepCreateBankCardStatusTransition, stepGetBankCardStatusTransition, stepListBankCardStatusTransition"/>
     <target name="testPaperChecks" depends="stepCreatePaperCheck, stepGetPaperCheck, stepListPaperCheck, stepUpdatePaperCheck, stepDeactivatePaperCheck, stepCreatePaperCheckStatusTransition, stepGetPaperCheckStatusTransition, stepListPaperCheckStatusTransition"/>
