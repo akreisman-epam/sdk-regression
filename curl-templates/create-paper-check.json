@@ -1,0 +1,6 @@
+{
+  "transferMethodCountry": "US",
+  "transferMethodCurrency": "USD",
+  "type": "PAPER_CHECK",
+  "bankAccountRelationship":"OWN_COMPANY"
+}

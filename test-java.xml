@@ -32,6 +32,8 @@
         </exec>
     </target>
 
+    <target name="testBankCards" depends="createUser, stepCreateBankCard, stepGetBankCard, stepListBankCard, stepUpdateBankCard"/>
+
     <target name="dist" depends="init, testApi"/>
 
 </project>

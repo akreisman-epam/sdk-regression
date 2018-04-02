@@ -21,9 +21,18 @@
     <property name="stepName_listBankCard" value=""/>
     <property name="stepName_updateBankCard" value=""/>
     <property name="stepName_deactivateBankCard" value=""/>
-    <property name="stepName_createBankCardTransition" value=""/>
-    <property name="stepName_getBankCardTransition" value=""/>
-    <property name="stepName_listBankCardTransition" value=""/>
+    <property name="stepName_createBankCardStatusTransition" value=""/>
+    <property name="stepName_getBankCardStatusTransition" value=""/>
+    <property name="stepName_listBankCardStatusTransition" value=""/>
+
+    <property name="stepName_createPaperCheck" value=""/>
+    <property name="stepName_getPaperCheck" value=""/>
+    <property name="stepName_listPaperCheck" value=""/>
+    <property name="stepName_updatePaperCheck" value=""/>
+    <property name="stepName_deactivatePaperCheck" value=""/>
+    <property name="stepName_createPaperCheckStatusTransition" value=""/>
+    <property name="stepName_getPaperCheckStatusTransition" value=""/>
+    <property name="stepName_listPaperCheckStatusTransitions" value=""/>
 
     <property name="hw.username" value="--should-be-overridden--"/>
     <property name="hw.password" value="--should-be-overridden--"/>
@@ -116,6 +125,37 @@
                        select="\1" />
         <echo message="Bank Card created: ${hw.bankCard2Token}"/>
         <fail unless="hw.bankCard2Token"/>
+    </target>
+
+    <target name="createPaperCheck">
+        <loadfile
+                property="createPaperCheckBody"
+                srcFile="curl-templates/create-paper-check.json">
+            <filterchain>
+                <expandproperties/>
+            </filterchain>
+        </loadfile>
+        <exec executable="curl" outputproperty="paperCheckResp">
+            <arg value="-X"/>
+            <arg value="POST"/>
+            <arg value="https://api.sandbox.hyperwallet.com/rest/v3/users/${hw.userToken}/paper-checks"/>
+            <arg value="-u"/>
+            <arg value="${hw.username}:${hw.password}"/>
+            <arg value="-H"/>
+            <arg value="Content-Type: application/json"/>
+            <arg value="-H"/>
+            <arg value="Accept: application/json"/>
+            <arg value="-d"/>
+            <arg value="${createPaperCheckBody}"/>
+        </exec>
+        <echo message="RESPONSE:"/>
+        <echo message="${paperCheckResp}"/>
+        <propertyregex property="hw.paperCheck2Token"
+                       input="${paperCheckResp}"
+                       regexp=".*&quot;token&quot;\s*:\s*&quot;([^&quot;]*)"
+                       select="\1" />
+        <echo message="Paper Check created: ${hw.paperCheck2Token}"/>
+        <fail unless="hw.paperCheck2Token"/>
     </target>
 
     <!--<target name="createBankAccount" if="hw.userToken">-->
@@ -274,13 +314,13 @@
         <local name="out"/>
         <local name="toStatus"/>
         <exec executable="${runStepCommand}" outputproperty="out" dir="${stepsDir}">
-            <arg line="${runStepCommandArgs} ${stepName_getBankCardStatusTransition} ${hw.username} ${hw.password} ${hw.programToken} ${hw.userToken} ${hw.bankCardToken} ${hw.bankCardStatusTransitionToken}"/>
+            <arg line="${runStepCommandArgs} ${stepName_getBankCardStatusTransition} ${hw.username} ${hw.password} ${hw.programToken} ${hw.userToken} ${hw.bankCard2Token} ${hw.bankCardStatusTransitionToken}"/>
         </exec>
         <echo message="RESPONSE:"/>
         <echo message="${out}"/>
         <propertyregex property="toStatus"
                        input="${out}"
-                       regexp=".*&quot;type&quot;\s*:\s*&quot;([^&quot;]*)"
+                       regexp=".*&quot;toStatus&quot;\s*:\s*&quot;([^&quot;]*)"
                        select="\1" />
         <fail message="${toStatus} does not equal to DE_ACTIVATED">
             <condition>
@@ -295,7 +335,7 @@
         <local name="out"/>
         <local name="count"/>
         <exec executable="${runStepCommand}" outputproperty="out" dir="${stepsDir}">
-            <arg line="${runStepCommandArgs} ${stepName_listBankCardStatusTransitions} ${hw.username} ${hw.password} ${hw.programToken} ${hw.userToken} ${hw.bankCardToken}"/>
+            <arg line="${runStepCommandArgs} ${stepName_listBankCardStatusTransitions} ${hw.username} ${hw.password} ${hw.programToken} ${hw.userToken} ${hw.bankCard2Token}"/>
         </exec>
         <echo message="RESPONSE:"/>
         <echo message="${out}"/>
@@ -316,14 +356,168 @@
     <!-- PAPER CHECKS -->
     <!--              -->
 
-    <!-- TODO -->
+    <target name="stepCreatePaperCheck" depends="createUser">
+        <local name="out"/>
+        <exec executable="${runStepCommand}" outputproperty="out" dir="${stepsDir}">
+            <arg line="${runStepCommandArgs} ${stepName_createPaperCheck} ${hw.username} ${hw.password} ${hw.programToken} ${hw.userToken}"/>
+        </exec>
+        <echo message="RESPONSE:"/>
+        <echo message="${out}"/>
+        <propertyregex property="hw.paperCheckToken"
+                       input="${out}"
+                       regexp=".*&quot;token&quot;\s*:\s*&quot;([^&quot;]*)"
+                       select="\1" />
+        <echo message="Paper Check created: ${hw.paperCheckToken}"/>
+        <fail unless="hw.paperCheckToken"/>
+    </target>
+
+    <target name="stepGetPaperCheck" depends="stepCreatePaperCheck">
+        <local name="out"/>
+        <local name="paperCheckType"/>
+        <exec executable="${runStepCommand}" outputproperty="out" dir="${stepsDir}">
+            <arg line="${runStepCommandArgs} ${stepName_getPaperCheck} ${hw.username} ${hw.password} ${hw.programToken} ${hw.userToken} ${hw.paperCheckToken}"/>
+        </exec>
+        <echo message="RESPONSE:"/>
+        <echo message="${out}"/>
+        <propertyregex property="paperCheckType"
+                       input="${out}"
+                       regexp=".*&quot;type&quot;\s*:\s*&quot;([^&quot;]*)"
+                       select="\1" />
+        <fail message="${paperCheckType} does not equal to PAPER_CHECK">
+            <condition>
+                <not>
+                    <equals arg1="${paperCheckType}" arg2="PAPER_CHECK"/>
+                </not>
+            </condition>
+        </fail>
+    </target>
+
+    <target name="stepListPaperCheck" depends="stepCreatePaperCheck">
+        <local name="out"/>
+        <local name="count"/>
+        <exec executable="${runStepCommand}" outputproperty="out" dir="${stepsDir}">
+            <arg line="${runStepCommandArgs} ${stepName_listPaperCheck} ${hw.username} ${hw.password} ${hw.programToken} ${hw.userToken}"/>
+        </exec>
+        <echo message="RESPONSE:"/>
+        <echo message="${out}"/>
+        <propertyregex property="count"
+                       input="${out}"
+                       regexp=".*&quot;count&quot;\s*:\s*([0-9]*)"
+                       select="\1" />
+        <fail message="${count} does not equal to 1">
+            <condition>
+                <not>
+                    <equals arg1="${count}" arg2="1"/>
+                </not>
+            </condition>
+        </fail>
+    </target>
+
+    <target name="stepUpdatePaperCheck" depends="stepCreatePaperCheck">
+        <local name="out"/>
+        <local name="addressLine1"/>
+        <exec executable="${runStepCommand}" outputproperty="out" dir="${stepsDir}">
+            <arg line="${runStepCommandArgs} ${stepName_updatePaperCheck} ${hw.username} ${hw.password} ${hw.programToken} ${hw.userToken} ${hw.paperCheckToken} SomeAddress"/>
+        </exec>
+        <echo message="RESPONSE:"/>
+        <echo message="${out}"/>
+        <propertyregex property="addressLine1"
+                       input="${out}"
+                       regexp=".*&quot;addressLine1&quot;\s*:\s*&quot;([^&quot;]*)"
+                       select="\1" />
+        <fail message="${addressLine1} does not equal to SomeAddress">
+            <condition>
+                <not>
+                    <equals arg1="${addressLine1}" arg2="SomeAddress"/>
+                </not>
+            </condition>
+        </fail>
+    </target>
+
+    <target name="stepDeactivatePaperCheck" depends="stepCreatePaperCheck">
+        <local name="out"/>
+        <local name="toStatus"/>
+        <exec executable="${runStepCommand}" outputproperty="out" dir="${stepsDir}">
+            <arg line="${runStepCommandArgs} ${stepName_deactivatePaperCheck} ${hw.username} ${hw.password} ${hw.programToken} ${hw.userToken} ${hw.paperCheckToken}"/>
+        </exec>
+        <echo message="RESPONSE:"/>
+        <echo message="${out}"/>
+        <propertyregex property="toStatus"
+                       input="${out}"
+                       regexp=".*&quot;toStatus&quot;\s*:\s*&quot;([^&quot;]*)"
+                       select="\1" />
+        <fail  message="${toStatus} does not equal to DE_ACTIVATED">
+            <condition>
+                <not>
+                    <equals arg1="${toStatus}" arg2="DE_ACTIVATED"/>
+                </not>
+            </condition>
+        </fail>
+    </target>
+
+    <target name="stepCreatePaperCheckStatusTransition" depends="createUser, createPaperCheck">
+        <local name="out"/>
+        <exec executable="${runStepCommand}" outputproperty="out" dir="${stepsDir}">
+            <arg line="${runStepCommandArgs} ${stepName_createPaperCheckStatusTransition} ${hw.username} ${hw.password} ${hw.programToken} ${hw.userToken} ${hw.paperCheck2Token}"/>
+        </exec>
+        <echo message="RESPONSE:"/>
+        <echo message="${out}"/>
+        <propertyregex property="hw.paperCheckStatusTransitionToken"
+                       input="${out}"
+                       regexp=".*&quot;token&quot;\s*:\s*&quot;([^&quot;]*)"
+                       select="\1" />
+        <echo message="Paper Check Transition created: ${hw.paperCheckStatusTransitionToken}"/>
+        <fail unless="hw.paperCheckStatusTransitionToken"/>
+    </target>
+
+    <target name="stepGetPaperCheckStatusTransition" depends="stepCreatePaperCheckStatusTransition">
+        <local name="out"/>
+        <local name="toStatus"/>
+        <exec executable="${runStepCommand}" outputproperty="out" dir="${stepsDir}">
+            <arg line="${runStepCommandArgs} ${stepName_getPaperCheckStatusTransition} ${hw.username} ${hw.password} ${hw.programToken} ${hw.userToken} ${hw.paperCheck2Token} ${hw.paperCheckStatusTransitionToken}"/>
+        </exec>
+        <echo message="RESPONSE:"/>
+        <echo message="${out}"/>
+        <propertyregex property="toStatus"
+                       input="${out}"
+                       regexp=".*&quot;toStatus&quot;\s*:\s*&quot;([^&quot;]*)"
+                       select="\1" />
+        <fail message="${toStatus} does not equal to DE_ACTIVATED">
+            <condition>
+                <not>
+                    <equals arg1="${toStatus}" arg2="DE_ACTIVATED"/>
+                </not>
+            </condition>
+        </fail>
+    </target>
+
+    <target name="stepListPaperCheckStatusTransition" depends="stepCreatePaperCheck">
+        <local name="out"/>
+        <local name="count"/>
+        <exec executable="${runStepCommand}" outputproperty="out" dir="${stepsDir}">
+            <arg line="${runStepCommandArgs} ${stepName_listPaperCheckStatusTransitions} ${hw.username} ${hw.password} ${hw.programToken} ${hw.userToken} ${hw.paperCheck2Token}"/>
+        </exec>
+        <echo message="RESPONSE:"/>
+        <echo message="${out}"/>
+        <propertyregex property="count"
+                       input="${out}"
+                       regexp=".*&quot;count&quot;\s*:\s*([0-9]*)"
+                       select="\1" />
+        <fail message="${count} does not equal to 3">
+            <condition>
+                <not>
+                    <equals arg1="${count}" arg2="3"/> <!-- Improve this -->
+                </not>
+            </condition>
+        </fail>
+    </target>
 
     <!--            -->
     <!--            -->
     <!--            -->
 
-    <target name="testBankCards" depends="createUser, stepCreateBankCard, stepGetBankCard, stepListBankCard, stepUpdateBankCard, stepDeactivateBankCard, stepCreateBankCardStatusTransition, stepGetBankCardStatusTransition, stepListBankCardStatusTransition"/>
-    <target name="testPaperChecks"/>
+    <target name="testBankCards" depends="stepCreateBankCard, stepGetBankCard, stepListBankCard, stepUpdateBankCard, stepDeactivateBankCard, stepCreateBankCardStatusTransition, stepGetBankCardStatusTransition, stepListBankCardStatusTransition"/>
+    <target name="testPaperChecks" depends="stepCreatePaperCheck, stepGetPaperCheck, stepListPaperCheck, stepUpdatePaperCheck, stepDeactivatePaperCheck, stepCreatePaperCheckStatusTransition, stepGetPaperCheckStatusTransition, stepListPaperCheckStatusTransition"/>
     <target name="testBankAccounts"/>
     <target name="testPrepaidCards"/>
     <target name="testPayments"/>

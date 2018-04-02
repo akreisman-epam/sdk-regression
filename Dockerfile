@@ -1,8 +1,8 @@
 FROM centos
 
 ADD lib /app/lib
+ADD curl-templates /app/curl-templates
 COPY *.xml /app/
-COPY *.json /app/
 
 RUN yum -y install https://centos7.iuscommunity.org/ius-release.rpm \
     && yum install -y epel-release \
