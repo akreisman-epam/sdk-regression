@@ -5,6 +5,7 @@ ADD curl-templates /app/curl-templates
 COPY *.xml /app/
 
 RUN yum -y install https://centos7.iuscommunity.org/ius-release.rpm \
+    && yum install -y mc htop python-pip\
     && yum install -y epel-release \
     &&  yum install -y --nogpgcheck java python36u php nodejs ant git wget which \
     && wget -P /usr/local http://www-eu.apache.org/dist/maven/maven-3/3.5.3/binaries/apache-maven-3.5.3-bin.tar.gz \

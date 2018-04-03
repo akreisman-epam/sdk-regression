@@ -36,6 +36,9 @@
 
     <property name="stepName_getBankAccountStatusTransition" value=""/>
 
+    <property name="stepName_createPrepaidCard" value=""/>
+    <property name="stepName_updatePrepaidCard" value=""/>
+
     <property name="stepName_createPaymentStatusTransition" value=""/>
     <property name="stepName_getPaymentStatusTransition" value=""/>
     <property name="stepName_listPaymentStatusTransitions" value=""/>
@@ -605,6 +608,107 @@
         </fail>
     </target>
 
+    <!--               -->
+    <!-- Prepaid Cards -->
+    <!--               -->
+    <target name="createPrepaidCard" depends="createUser">
+        <local name="touchTime"/>
+        <tstamp>
+            <format property="touchTime" pattern="yyyyMMddhhmmss"/>
+        </tstamp>
+        <loadfile
+                property="createPrepaidCardBody"
+                srcFile="curl-templates/create-prepaid-card.json">
+            <filterchain>
+                <expandproperties/>
+            </filterchain>
+        </loadfile>
+        <exec executable="curl" outputproperty="prepaidCardResp">
+            <arg value="-X"/>
+            <arg value="POST"/>
+            <arg value="https://api.sandbox.hyperwallet.com/rest/v3/users/${hw.userToken}/prepaid-cards"/>
+            <arg value="-u"/>
+            <arg value="${hw.username}:${hw.password}"/>
+            <arg value="-H"/>
+            <arg value="Content-Type: application/json"/>
+            <arg value="-H"/>
+            <arg value="Accept: application/json"/>
+            <arg value="-d"/>
+            <arg value="${createPrepaidCardBody}"/>
+        </exec>
+        <echo message="RESPONSE:"/>
+        <echo message="${prepaidCardResp}"/>
+        <propertyregex property="hw.prepaidCardToken"
+                       input="${prepaidCardResp}"
+                       regexp=".*&quot;token&quot;\s*:\s*&quot;([^&quot;]*)"
+                       select="\1" />
+        <echo message="Prepaid Card created: ${hw.prepaidCardToken}"/>
+        <fail unless="hw.prepaidCardToken"/>
+    </target>
+
+    <target name="waitPaidCardCreation">
+        <!--<retry retrycount="5" retrydelay="60000">-->
+            <!--<antcall target="checkPrepaidCardExist"/>-->
+        <!--</retry>-->
+    </target>
+
+    <target name="checkPrepaidCardExist">
+        <exec executable="curl" outputproperty="prepaidCardExist">
+            <arg value="-X"/>
+            <arg value="GET"/>
+            <arg value="https://api.sandbox.hyperwallet.com/rest/v3/users/${hw.userToken}/prepaid-cards/${hw.prepaidCardToken}"/>
+            <arg value="-u"/>
+            <arg value="${hw.username}:${hw.password}"/>
+            <arg value="-H"/>
+            <arg value="Content-Type: application/json"/>
+            <arg value="-H"/>
+            <arg value="Accept: application/json"/>
+            <arg value="-f"/>
+        </exec>
+        <fail unless="hw.prepaidCardExist" message="Prepaid Card don't exist yet."/>
+    </target>
+
+    <!-- For development use only-->
+    <!--<target name="updatePrepaidCard">-->
+        <!--<loadfile-->
+                <!--property="updatePrepaidCardBody"-->
+                <!--srcFile="curl-templates/update-prepaid-card.json">-->
+            <!--<filterchain>-->
+                <!--<expandproperties/>-->
+            <!--</filterchain>-->
+        <!--</loadfile>-->
+        <!--<exec executable="curl" outputproperty="prepaidCardUpdated">-->
+            <!--<arg value="-X"/>-->
+            <!--<arg value="PUT"/>-->
+            <!--<arg value="https://api.sandbox.hyperwallet.com/rest/v3/users/usr-99be9b7e-6e64-429d-a650-9cef33759d96/prepaid-cards/trm-69a7dcf6-73b9-4791-8626-0de42957f85d"/>-->
+            <!--<arg value="-u"/>-->
+            <!--<arg value="${hw.username}:${hw.password}"/>-->
+            <!--<arg value="-H"/>-->
+            <!--<arg value="Content-Type: application/json"/>-->
+            <!--<arg value="-H"/>-->
+            <!--<arg value="Accept: application/json"/>-->
+            <!--<arg value="-d"/>-->
+            <!--<arg value="${updatePrepaidCardBody}"/>-->
+        <!--</exec>-->
+        <!--<echo message="RESPONSE: ${prepaidCardUpdated}"/>-->
+    <!--</target>-->
+
+    <target name="stepUpdatePrepaidCard" depends="createPrepaidCard, waitPaidCardCreation">
+        <!-- TODO: INVALID_PARAMETER error occurred -->
+        <!--<local name="out"/>-->
+        <!--<exec executable="${runStepCommand}" outputproperty="out" dir="${stepsDir}">-->
+            <!--<arg line="${runStepCommandArgs} ${stepName_updatePrepaidCard} ${hw.username} ${hw.password} ${hw.programToken} ${hw.userToken} ${hw.prepaidCardToken}"/>-->
+        <!--</exec>-->
+        <!--<echo message="RESPONSE:"/>-->
+        <!--<echo message="${out}"/>-->
+        <!--<propertyregex property="hw.updatePrepaidCardToken"-->
+                       <!--input="${out}"-->
+                       <!--regexp=".*&quot;token&quot;\s*:\s*&quot;([^&quot;]*)"-->
+                       <!--select="\1" />-->
+        <!--<echo message="Prepaid card updated: ${hw.updatePrepaidCardToken}"/>-->
+        <!--<fail unless="hw.updatePrepaidCardToken"/>-->
+    </target>
+
     <!--          -->
     <!-- Payments -->
     <!--          -->
@@ -672,7 +776,7 @@
     <target name="testBankCards" depends="stepCreateBankCard, stepGetBankCard, stepListBankCard, stepUpdateBankCard, stepDeactivateBankCard, stepCreateBankCardStatusTransition, stepGetBankCardStatusTransition, stepListBankCardStatusTransition"/>
     <target name="testPaperChecks" depends="stepCreatePaperCheck, stepGetPaperCheck, stepListPaperCheck, stepUpdatePaperCheck, stepDeactivatePaperCheck, stepCreatePaperCheckStatusTransition, stepGetPaperCheckStatusTransition, stepListPaperCheckStatusTransition"/>
     <target name="testBankAccounts" depends="stepGetBankAccountStatusTransition"/>
-    <target name="testPrepaidCards"/>
+    <target name="testPrepaidCards" depends="stepUpdatePrepaidCard"/>
     <target name="testPayments" depends="stepCreatePaymentStatusTransition"/>
 
     <target name="testApi" depends="testBankCards, testPaperChecks, testBankAccounts, testPrepaidCards, testPayments"/>
