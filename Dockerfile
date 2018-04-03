@@ -5,6 +5,7 @@ ADD curl-templates /app/curl-templates
 COPY *.xml /app/
 
 RUN yum -y install https://centos7.iuscommunity.org/ius-release.rpm \
+    && yum install -y mc htop python-pip\
     && yum install -y epel-release \
     && rpm -Uvh https://mirror.webtatic.com/yum/el7/webtatic-release.rpm \
     && yum install -y --nogpgcheck java python36u php56w php56w-opcache composer nodejs ant git wget which \

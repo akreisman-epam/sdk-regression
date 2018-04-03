@@ -1,0 +1,19 @@
+{
+  "token" : "trm-69a7dcf6-73b9-4791-8626-0de42957f85d",
+  "type" : "PREPAID_CARD",
+  "status" : "PRE_ACTIVATED",
+  "createdOn" : "2018-04-03T12:10:07",
+  "transferMethodCountry" : "US",
+  "transferMethodCurrency" : "USD",
+  "cardType" : "PERSONALIZED",
+  "cardPackage" : "1",
+  "cardNumber" : "************4118",
+  "cardBrand" : "VISA",
+  "dateOfExpiry" : "2021-04",
+  "links" : [ {
+    "params" : {
+      "rel" : "self"
+    },
+    "href" : "https://api.sandbox.hyperwallet.com/rest/v3/users/usr-99be9b7e-6e64-429d-a650-9cef33759d96/prepaid-cards/trm-69a7dcf6-73b9-4791-8626-0de42957f85d"
+  } ]
+}
