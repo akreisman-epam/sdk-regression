@@ -14,6 +14,9 @@
     <property name="stepName_listBankCard" value="com.hyperwallet.example.bankcard.ListBankCards"/>
     <property name="stepName_updateBankCard" value="com.hyperwallet.example.bankcard.UpdateBankCard"/>
     <property name="stepName_deactivateBankCard" value="com.hyperwallet.example.bankcard.DeactivateBankCard"/>
+    <property name="stepName_createBankCardStatusTransition" value="com.hyperwallet.example.bankcard.CreateBankCardStatusTransition"/>
+    <property name="stepName_getBankCardStatusTransition" value="com.hyperwallet.example.bankcard.RetrieveBankCardStatusTransition"/>
+    <property name="stepName_listBankCardStatusTransitions" value="com.hyperwallet.example.bankcard.ListBankCardStatusTransitions"/>
 
     <property name="stepName_createPaperCheck" value="com.hyperwallet.example.papercheck.CreatePaperCheck"/>
     <property name="stepName_getPaperCheck" value="com.hyperwallet.example.papercheck.RetrievePaperCheck"/>
@@ -23,6 +26,10 @@
     <property name="stepName_createPaperCheckStatusTransition" value="com.hyperwallet.example.papercheck.CreatePaperCheckStatusTransition"/>
     <property name="stepName_getPaperCheckStatusTransition" value="com.hyperwallet.example.papercheck.RetrievePaperCheckStatusTransition"/>
     <property name="stepName_listPaperCheckStatusTransitions" value="com.hyperwallet.example.papercheck.ListPaperCheckStatusTransitions"/>
+
+    <property name="stepName_createPaymentStatusTransition" value="com.hyperwallet.example.payment.CreatePaymentStatusTransition"/>
+    <property name="stepName_getPaymentStatusTransition" value="com.hyperwallet.example.payment.ListPaymentStatusTransitions"/>
+    <property name="stepName_listPaymentStatusTransitions" value="com.hyperwallet.example.payment.RetrievePaymentStatusTransition"/>
 
     <import file="test-scenario.xml"/>
 
@@ -42,9 +49,8 @@
         </exec>
     </target>
 
-    <target name="testBankCards" depends="stepCreateBankCard, stepGetBankCard, stepListBankCard, stepUpdateBankCard, stepDeactivateBankCard"/>
-
-    <target name="testPaperChecks" depends="stepCreatePaperCheck, stepGetPaperCheck, stepListPaperCheck, stepUpdatePaperCheck, stepDeactivatePaperCheck,
-     stepCreatePaperCheckStatusTransition, stepGetPaperCheckStatusTransition, stepListPaperCheckStatusTransition"/>
+    <target name="testBankCards" depends="stepCreateBankCard, stepGetBankCard, stepListBankCard, stepUpdateBankCard, stepDeactivateBankCard, stepCreateBankCardStatusTransition, stepGetBankCardStatusTransition, stepListBankCardStatusTransition"/>
+    <target name="testPaperChecks" depends="stepCreatePaperCheck, stepGetPaperCheck, stepListPaperCheck, stepUpdatePaperCheck, stepDeactivatePaperCheck, stepCreatePaperCheckStatusTransition, stepGetPaperCheckStatusTransition, stepListPaperCheckStatusTransition"/>
+    <target name="testPayments" depends="stepCreatePaymentStatusTransition"/>
 
 </project>
