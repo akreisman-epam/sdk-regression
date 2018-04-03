@@ -15,6 +15,15 @@
     <property name="stepName_updateBankCard" value="com.hyperwallet.example.bankcard.UpdateBankCard"/>
     <property name="stepName_deactivateBankCard" value="com.hyperwallet.example.bankcard.DeactivateBankCard"/>
 
+    <property name="stepName_createPaperCheck" value="com.hyperwallet.example.papercheck.CreatePaperCheck"/>
+    <property name="stepName_getPaperCheck" value="com.hyperwallet.example.papercheck.RetrievePaperCheck"/>
+    <property name="stepName_listPaperCheck" value="com.hyperwallet.example.papercheck.ListPaperChecks"/>
+    <property name="stepName_updatePaperCheck" value="com.hyperwallet.example.papercheck.UpdatePaperCheck"/>
+    <property name="stepName_deactivatePaperCheck" value="com.hyperwallet.example.papercheck.DeactivatePaperCheck"/>
+    <property name="stepName_createPaperCheckStatusTransition" value="com.hyperwallet.example.papercheck.CreatePaperCheckStatusTransition"/>
+    <property name="stepName_getPaperCheckStatusTransition" value="com.hyperwallet.example.papercheck.RetrievePaperCheckStatusTransition"/>
+    <property name="stepName_listPaperCheckStatusTransitions" value="com.hyperwallet.example.papercheck.ListPaperCheckStatusTransitions"/>
+
     <import file="test-scenario.xml"/>
 
     <target name="init" depends="download-sdk, download-steps">
@@ -23,6 +32,7 @@
             <arg value="${sdkDir}"/>
             <arg value="clean"/>
             <arg value="install"/>
+            <arg value="-DskipTests"/>
         </exec>
         <exec executable="mvn">
             <arg value="-f"/>
@@ -32,6 +42,9 @@
         </exec>
     </target>
 
-    <target name="testBankCards" depends="createUser, stepCreateBankCard, stepGetBankCard, stepListBankCard, stepUpdateBankCard"/>
+    <target name="testBankCards" depends="stepCreateBankCard, stepGetBankCard, stepListBankCard, stepUpdateBankCard, stepDeactivateBankCard"/>
+
+    <target name="testPaperChecks" depends="stepCreatePaperCheck, stepGetPaperCheck, stepListPaperCheck, stepUpdatePaperCheck, stepDeactivatePaperCheck,
+     stepCreatePaperCheckStatusTransition, stepGetPaperCheckStatusTransition, stepListPaperCheckStatusTransition"/>
 
 </project>
