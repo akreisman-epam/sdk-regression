@@ -49,8 +49,17 @@
         </exec>
     </target>
 
-    <target name="testBankCards" depends="stepCreateBankCard, stepGetBankCard, stepListBankCard, stepUpdateBankCard, stepDeactivateBankCard, stepCreateBankCardStatusTransition, stepGetBankCardStatusTransition, stepListBankCardStatusTransition"/>
-    <target name="testPaperChecks" depends="stepCreatePaperCheck, stepGetPaperCheck, stepListPaperCheck, stepUpdatePaperCheck, stepDeactivatePaperCheck, stepCreatePaperCheckStatusTransition, stepGetPaperCheckStatusTransition, stepListPaperCheckStatusTransition"/>
-    <target name="testPayments" depends="stepCreatePaymentStatusTransition"/>
+    <target name="testBankCards" depends="stepCreateBankCard, stepGetBankCard, stepListBankCard, stepUpdateBankCard, stepDeactivateBankCard, stepCreateBankCardStatusTransition, stepGetBankCardStatusTransition, stepListBankCardStatusTransition">
+        <echo message="Ok"/>
+    </target>
+    <target name="testPaperChecks" depends="stepCreatePaperCheck, stepGetPaperCheck, stepListPaperCheck, stepUpdatePaperCheck, stepDeactivatePaperCheck, stepCreatePaperCheckStatusTransition, stepGetPaperCheckStatusTransition, stepListPaperCheckStatusTransition">
+        <echo message="Ok"/>
+    </target>
+    <target name="testPayments" depends="stepCreatePaymentStatusTransition">
+        <echo message="Ok"/>
+    </target>
+    <target name="testPrepaidCards" depends="stepUpdatePrepaidCard">
+        <echo message="Ok"/>
+    </target>
 
 </project>

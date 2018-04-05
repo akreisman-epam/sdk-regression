@@ -14,15 +14,20 @@
 
     <import file="test-scenario.xml"/>
 
-    <target name="testPayments" depends="stepCreatePaymentStatusTransition"/>
-    <target name="testPrepaidCards" depends="stepUpdatePrepaidCard"/>
-
     <target name="init" depends="download-sdk, download-steps">
         <exec executable="pip" dir="${distDir}">
             <arg value="install"/>
             <arg value="./sdk"/>
             <arg value="--upgrade"/>
         </exec>
+    </target>
+
+
+    <target name="testPayments" depends="stepCreatePaymentStatusTransition">
+        <echo message="Ok"/>
+    </target>
+    <target name="testPrepaidCards" depends="stepUpdatePrepaidCard">
+        <echo message="Ok"/>
     </target>
 
     <target name="dist" depends="init, testApi"/>

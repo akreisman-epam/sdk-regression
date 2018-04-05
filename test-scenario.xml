@@ -36,7 +36,6 @@
 
     <property name="stepName_getBankAccountStatusTransition" value=""/>
 
-    <property name="stepName_createPrepaidCard" value=""/>
     <property name="stepName_updatePrepaidCard" value=""/>
 
     <property name="stepName_createPaymentStatusTransition" value=""/>
@@ -550,10 +549,10 @@
                        input="${out}"
                        regexp=".*&quot;count&quot;\s*:\s*([0-9]*)"
                        select="\1" />
-        <fail message="${count} does not equal to 3">
+        <fail message="${count} does not equal to 1">
             <condition>
                 <not>
-                    <equals arg1="${count}" arg2="3"/> <!-- TODO: Improve this -->
+                    <equals arg1="${count}" arg2="1"/>
                 </not>
             </condition>
         </fail>
