@@ -1,0 +1,7 @@
+{
+  "type":"BANK_CARD",
+  "cardNumber": "4216701111102222",
+  "dateOfExpiry":"2030-01",
+  "transferMethodCountry":"US",
+  "transferMethodCurrency":"USD"
+}

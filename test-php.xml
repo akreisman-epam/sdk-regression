@@ -1,0 +1,66 @@
+<project name="Hyperwallet api php test" default="dist" basedir=".">
+
+    <property name="distDir" location="dist"/>
+    <property name="sdkDir" location="${distDir}/php-sdk"/>
+    <property name="stepsDir" location="${distDir}/steps"/>
+
+    <property name="sdkGitRepositoryUrl" value="https://github.com/akreisman-epam/php-sdk.git"/>
+    <property name="stepsGitRepositoryUrl" value="https://github.com/akreisman-epam/php-sdk-examples.git"/>
+    <property name="runStepCommand" value="php"/>
+    <property name="runStepCommandArgs" value=" "/>
+
+    <property name="stepName_createBankCard" value="src/bankcard/create-bank-card.php"/>
+    <property name="stepName_getBankCard" value="src/bankcard/get-bank-card.php"/>
+    <property name="stepName_listBankCard" value="src/bankcard/list-bank-cards.php"/>
+    <property name="stepName_updateBankCard" value="src/bankcard/update-bank-card.php"/>
+    <property name="stepName_deactivateBankCard" value="src/bankcard/deactivate-bank-card.php"/>
+    <property name="stepName_createBankCardStatusTransition" value="src/bankcard/create-bank-card-transition.php"/>
+    <property name="stepName_getBankCardStatusTransition" value="src/bankcard/get-bank-card-transition.php"/>
+    <property name="stepName_listBankCardStatusTransitions" value="src/bankcard/list-bank-card-transitions.php"/>
+
+    <property name="stepName_createPaperCheck" value="src/papercheck/create-paper-check.php"/>
+    <property name="stepName_getPaperCheck" value="src/papercheck/get-paper-check.php"/>
+    <property name="stepName_listPaperCheck" value="src/papercheck/list-paper-checks.php"/>
+    <property name="stepName_updatePaperCheck" value="src/papercheck/update-paper-check.php"/>
+    <property name="stepName_deactivatePaperCheck" value="src/papercheck/deactivate-paper-check.php"/>
+    <property name="stepName_createPaperCheckStatusTransition" value="src/papercheck/create-paper-check-transition.php"/>
+    <property name="stepName_getPaperCheckStatusTransition" value="src/papercheck/get-paper-check-transition.php"/>
+    <property name="stepName_listPaperCheckStatusTransitions" value="src/papercheck/list-paper-check-transitions.php"/>
+
+    <property name="stepName_getBankAccountStatusTransition" value="src/bankaccount/get-bank-account-transition.php"/>
+
+    <property name="stepName_createPaymentStatusTransition" value="src/payment/create-payment-transition.php"/>
+    <property name="stepName_getPaymentStatusTransition" value="src/payment/get-payment-transition.php"/>
+    <property name="stepName_listPaymentStatusTransitions" value="src/payment/list-payment-transitions.php"/>
+
+    <property name="stepName_getUserStatusTransition" value="src/user/get-user-transition.php"/>
+    <property name="stepName_listUserStatusTransitions" value="src/user/list-user-transitions.php"/>
+
+    <import file="test-scenario.xml"/>
+
+    <target name="init" depends="download-sdk, download-steps">
+        <exec executable="composer" dir="${sdkDir}">
+            <arg value="install"/>
+        </exec>
+        <exec executable="composer" dir="${stepsDir}">
+            <arg value="install"/>
+        </exec>
+    </target>
+
+    <target name="testBankCards" depends="stepCreateBankCard, stepGetBankCard, stepListBankCard, stepUpdateBankCard, stepDeactivateBankCard, stepCreateBankCardStatusTransition, stepGetBankCardStatusTransition, stepListBankCardStatusTransition">
+        <echo message="Ok"/>
+    </target>
+    <target name="testPaperChecks" depends="stepCreatePaperCheck, stepGetPaperCheck, stepListPaperCheck, stepUpdatePaperCheck, stepDeactivatePaperCheck, stepCreatePaperCheckStatusTransition, stepGetPaperCheckStatusTransition, stepListPaperCheckStatusTransition">
+        <echo message="Ok"/>
+    </target>
+    <target name="testBankAccounts" depends="stepGetBankAccountStatusTransition">
+        <echo message="Ok"/>
+    </target>
+    <target name="testPayments" depends="stepCreatePaymentStatusTransition">
+        <echo message="Ok"/>
+    </target>
+    <target name="testUser" depends="stepListUserStatusTransition, stepGetUserStatusTransition">
+        <echo message="Ok"/>
+    </target>
+
+</project>

@@ -1,8 +1,14 @@
 <project name="Hyperwallet api test" default="testAll" basedir=".">
 
     <target name="testAll">
+        <echo message="test JAVA-SDK..."/>
         <ant antfile="test-java.xml"/>
+        <echo message="test NODE-SDK..."/>
         <ant antfile="test-node.xml"/>
+        <echo message="test PHP-SDK..."/>
+        <ant antfile="test-php.xml"/>
+        <echo message="test PYTHON-SDK..."/>
+        <ant antfile="test-python.xml"/>
     </target>
 
 </project>

@@ -1,0 +1,9 @@
+{
+  "amount": "20.00",
+  "clientPaymentId": "${touchTime}",
+  "releaseOn": "${touchTime}",
+  "currency": "USD",
+  "destinationToken": "${hw.userToken}",
+  "programToken": "${hw.programToken}",
+  "purpose": "OTHER"
+}

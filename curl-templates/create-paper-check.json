@@ -1,0 +1,13 @@
+{
+  "transferMethodCountry": "US",
+  "transferMethodCurrency": "USD",
+  "type": "PAPER_CHECK",
+  "bankAccountRelationship":"OWN_COMPANY",
+  "profileType":"INDIVIDUAL",
+  "city":"NY",
+  "country": "US",
+  "shippingMethod": "STANDARD",
+  "stateProvince": "IO",
+  "postalCode": "12345",
+  "addressLine1": "88th str"
+}

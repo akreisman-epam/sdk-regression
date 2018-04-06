@@ -1,0 +1,40 @@
+<project name="Hyperwallet api python test" default="dist" basedir=".">
+
+    <property name="distDir" location="dist"/>
+    <property name="sdkDir" location="${distDir}/sdk"/>
+    <property name="stepsDir" location="${distDir}/steps"/>
+
+    <property name="sdkGitRepositoryUrl" value="https://github.com/akreisman-epam/python-sdk.git"/>
+    <property name="stepsGitRepositoryUrl" value="https://github.com/akreisman-epam/python-sdk-examples.git"/>
+    <property name="runStepCommand" value="python"/>
+    <property name="runStepCommandArgs" value=""/>
+
+    <property name="stepName_createPaymentStatusTransition" value="createPaymentStatusTransition.py"/>
+    <property name="stepName_updatePrepaidCard" value="updatePrepaidCard.py"/>
+    <property name="stepName_getUserStatusTransition" value="getUserStatusTransition.py"/>
+    <property name="stepName_listUserStatusTransitions" value="listUserStatusTransition.py"/>
+
+    <import file="test-scenario.xml"/>
+
+    <target name="init" depends="download-sdk, download-steps">
+        <exec executable="pip" dir="${distDir}">
+            <arg value="install"/>
+            <arg value="./sdk"/>
+            <arg value="--upgrade"/>
+        </exec>
+    </target>
+
+
+    <target name="testPayments" depends="stepCreatePaymentStatusTransition">
+        <echo message="Ok"/>
+    </target>
+    <target name="testPrepaidCards" depends="stepUpdatePrepaidCard">
+        <echo message="Ok"/>
+    </target>
+    <target name="testUser" depends="stepListUserStatusTransition, stepGetUserStatusTransition">
+        <echo message="Ok"/>
+    </target>
+
+    <target name="dist" depends="init, testApi"/>
+
+</project>
