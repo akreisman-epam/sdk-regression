@@ -31,6 +31,9 @@
     <property name="stepName_getPaymentStatusTransition" value="com.hyperwallet.example.payment.ListPaymentStatusTransitions"/>
     <property name="stepName_listPaymentStatusTransitions" value="com.hyperwallet.example.payment.RetrievePaymentStatusTransition"/>
 
+    <property name="stepName_getUserStatusTransition" value="com.hyperwallet.example.user.GetUserStatusTransition"/>
+    <property name="stepName_listUserStatusTransitions" value="com.hyperwallet.example.user.ListUserStatusTransitions"/>
+
     <import file="test-scenario.xml"/>
 
     <target name="init" depends="download-sdk, download-steps">
@@ -59,6 +62,9 @@
         <echo message="Ok"/>
     </target>
     <target name="testPrepaidCards" depends="stepUpdatePrepaidCard">
+        <echo message="Ok"/>
+    </target>
+    <target name="testUser" depends="stepListUserStatusTransition, stepGetUserStatusTransition">
         <echo message="Ok"/>
     </target>
 

@@ -802,7 +802,7 @@
     <!--</target>--> <!-- TODO: clarify "The caller does not have access to the requested resource"-->
 
     <!--                        -->
-    <!-- User Status Transition -->
+    <!-- User -->
     <!--                        -->
     <target name="stepListUserStatusTransition" depends="createUserStatusTransition">
         <local name="out"/>

@@ -33,6 +33,9 @@
     <property name="stepName_getPaymentStatusTransition" value="src/payment/get-payment-transition.php"/>
     <property name="stepName_listPaymentStatusTransitions" value="src/payment/list-payment-transitions.php"/>
 
+    <property name="stepName_getUserStatusTransition" value="src/user/get-user-transition.php"/>
+    <property name="stepName_listUserStatusTransitions" value="src/user/list-user-transitions.php"/>
+
     <import file="test-scenario.xml"/>
 
     <target name="init" depends="download-sdk, download-steps">
@@ -54,6 +57,9 @@
         <echo message="Ok"/>
     </target>
     <target name="testPayments" depends="stepCreatePaymentStatusTransition">
+        <echo message="Ok"/>
+    </target>
+    <target name="testUser" depends="stepListUserStatusTransition, stepGetUserStatusTransition">
         <echo message="Ok"/>
     </target>
 
