@@ -5,7 +5,7 @@
     <property name="stepsDir" location="${distDir}/steps"/>
 
     <property name="sdkGitRepositoryUrl" value="https://github.com/akreisman-epam/python-sdk.git"/>
-    <property name="stepsGitRepositoryUrl" value="https://github.com/asolianyk-epam/python-sdk-examples.git"/>
+    <property name="stepsGitRepositoryUrl" value="https://github.com/akreisman-epam/python-sdk-examples.git"/>
     <property name="runStepCommand" value="python"/>
     <property name="runStepCommandArgs" value=""/>
 
@@ -31,7 +31,7 @@
     <target name="testPrepaidCards" depends="stepUpdatePrepaidCard">
         <echo message="Ok"/>
     </target>
-    <target name="testUserStatusTransition" depends="stepListUserStatusTransition, stepGetUserStatusTransition">
+    <target name="testUser" depends="stepListUserStatusTransition, stepGetUserStatusTransition">
         <echo message="Ok"/>
     </target>
 

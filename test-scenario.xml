@@ -867,11 +867,11 @@
         <echo message="No tests"/>
     </target>
 
-    <target name="testUserStatusTransition">
+    <target name="testUser">
         <echo message="No tests"/>
     </target>
 
-    <target name="testApi" depends="testBankCards, testPaperChecks, testBankAccounts, testPrepaidCards, testPayments, testUserStatusTransition"/>
+    <target name="testApi" depends="testBankCards, testPaperChecks, testBankAccounts, testPrepaidCards, testPayments, testUser"/>
 
     <target name="dist" depends="init, testApi"/>
 
