@@ -11,6 +11,8 @@
 
     <property name="stepName_createPaymentStatusTransition" value="createPaymentStatusTransition.py"/>
     <property name="stepName_updatePrepaidCard" value="updatePrepaidCard.py"/>
+    <property name="stepName_getUserStatusTransition" value="getUserStatusTransition.py"/>
+    <property name="stepName_listUserStatusTransitions" value="listUserStatusTransition.py"/>
 
     <import file="test-scenario.xml"/>
 
@@ -27,6 +29,9 @@
         <echo message="Ok"/>
     </target>
     <target name="testPrepaidCards" depends="stepUpdatePrepaidCard">
+        <echo message="Ok"/>
+    </target>
+    <target name="testUserStatusTransition" depends="stepListUserStatusTransition, stepGetUserStatusTransition">
         <echo message="Ok"/>
     </target>
 
