@@ -42,6 +42,9 @@
     <property name="stepName_getPaymentStatusTransition" value=""/>
     <property name="stepName_listPaymentStatusTransitions" value=""/>
 
+    <property name="stepName_getUserStatusTransition" value=""/>
+    <property name="stepName_listUserStatusTransitions" value=""/>
+
     <property name="hw.username" value="--should-be-overridden--"/>
     <property name="hw.password" value="--should-be-overridden--"/>
     <property name="hw.programToken" value="--should-be-overridden--"/>
@@ -103,6 +106,36 @@
                        select="\1" />
         <echo message="User created: ${hw.userToken}"/>
         <fail unless="hw.userToken"/>
+    </target>
+
+    <target name="createUserStatusTransition" depends="createUser">
+        <local name="out"/>
+        <local name="toStatus"/>
+        <loadfile
+                property="createUserStatusTransitionBody"
+                srcFile="curl-templates/create-user-status-transition.json">
+            <filterchain>
+                <expandproperties/>
+            </filterchain>
+        </loadfile>
+        <exec executable="curl" outputproperty="out">
+            <arg value="-X"/>
+            <arg value="POST"/>
+            <arg value="https://api.sandbox.hyperwallet.com/rest/v3/users/${hw.userToken}/status-transitions"/>
+            <arg value="-u"/>
+            <arg value="${hw.username}:${hw.password}"/>
+            <arg value="-H"/>
+            <arg value="Content-Type: application/json"/>
+            <arg value="-H"/>
+            <arg value="Accept: application/json"/>
+            <arg value="-d"/>
+            <arg value="${createUserStatusTransitionBody}"/>
+        </exec>
+        <propertyregex property="hw.userStatusTransitionToken"
+                       input="${out}"
+                       regexp=".*&quot;token&quot;\s*:\s*&quot;([^&quot;]*)"
+                       select="\1" />
+        <echo message="User Status Transaction created: ${hw.userStatusTransitionToken}"/>
     </target>
 
     <target name="createBankCard" if="hw.userToken">
@@ -768,6 +801,51 @@
         <!--</fail>-->
     <!--</target>--> <!-- TODO: clarify "The caller does not have access to the requested resource"-->
 
+    <!--                        -->
+    <!-- User Status Transition -->
+    <!--                        -->
+    <target name="stepListUserStatusTransition" depends="createUserStatusTransition">
+        <local name="out"/>
+        <local name="count"/>
+        <exec executable="${runStepCommand}" outputproperty="out" dir="${stepsDir}">
+            <arg line="${runStepCommandArgs} ${stepName_listUserStatusTransitions} ${hw.username} ${hw.password} ${hw.programToken} ${hw.userToken} "/>
+        </exec>
+        <echo message="RESPONSE:"/>
+        <echo message="${out}"/>
+        <propertyregex property="count"
+                       input="${out}"
+                       regexp=".*&quot;count&quot;\s*:\s*([0-9]*)"
+                       select="\1" />
+        <fail message="${count} does not equal to 1">
+            <condition>
+                <not>
+                    <equals arg1="${count}" arg2="1"/>
+                </not>
+            </condition>
+        </fail>
+    </target>
+
+    <target name="stepGetUserStatusTransition" depends="createUserStatusTransition">
+        <local name="out"/>
+        <local name="toStatus"/>
+        <exec executable="${runStepCommand}" outputproperty="out" dir="${stepsDir}">
+            <arg line="${runStepCommandArgs} ${stepName_getUserStatusTransition} ${hw.username} ${hw.password} ${hw.programToken} ${hw.userToken} ${hw.userStatusTransitionToken}"/>
+        </exec>
+        <echo message="RESPONSE:"/>
+        <echo message="${out}"/>
+        <propertyregex property="toStatus"
+                       input="${out}"
+                       regexp=".*&quot;toStatus&quot;\s*:\s*&quot;([^&quot;]*)"
+                       select="\1" />
+        <fail message="${toStatus} does not equal to LOCKED">
+            <condition>
+                <not>
+                    <equals arg1="${toStatus}" arg2="LOCKED"/>
+                </not>
+            </condition>
+        </fail>
+    </target>
+
     <!--            -->
     <!--            -->
     <!--            -->
@@ -789,7 +867,11 @@
         <echo message="No tests"/>
     </target>
 
-    <target name="testApi" depends="testBankCards, testPaperChecks, testBankAccounts, testPrepaidCards, testPayments"/>
+    <target name="testUserStatusTransition">
+        <echo message="No tests"/>
+    </target>
+
+    <target name="testApi" depends="testBankCards, testPaperChecks, testBankAccounts, testPrepaidCards, testPayments, testUserStatusTransition"/>
 
     <target name="dist" depends="init, testApi"/>
 
