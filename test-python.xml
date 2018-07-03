@@ -14,6 +14,11 @@
     <property name="stepName_getUserStatusTransition" value="getUserStatusTransition.py"/>
     <property name="stepName_listUserStatusTransitions" value="listUserStatusTransition.py"/>
 
+    <property name="stepName_createTransfer" value="transfer/createTransfer.py"/>
+    <property name="stepName_getTransfer" value="transfer/getTransfer.py"/>
+    <property name="stepName_listTransfer" value="transfer/listTransfers.py"/>
+    <property name="stepName_createTransferStatusTransition" value="transfer/createTransferStatusTransition.py"/>
+
     <import file="test-scenario.xml"/>
 
     <target name="init" depends="download-sdk, download-steps">
@@ -26,6 +31,9 @@
 
 
     <target name="testPayments" depends="stepCreatePaymentStatusTransition">
+        <echo message="Ok"/>
+    </target>
+    <target name="testTransfers" depends="stepCreateTransfer, stepGetTransfer, stepListTransfer, stepCreateTransferStatusTransition">
         <echo message="Ok"/>
     </target>
     <target name="testPrepaidCards" depends="stepUpdatePrepaidCard">

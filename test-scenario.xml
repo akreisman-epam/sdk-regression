@@ -34,6 +34,11 @@
     <property name="stepName_getPaperCheckStatusTransition" value=""/>
     <property name="stepName_listPaperCheckStatusTransitions" value=""/>
 
+    <property name="stepName_createTransfer" value=""/>
+    <property name="stepName_getTransfer" value=""/>
+    <property name="stepName_listTransfer" value=""/>
+    <property name="stepName_createTransferStatusTransition" value=""/>
+
     <property name="stepName_getBankAccountStatusTransition" value=""/>
 
     <property name="stepName_updatePrepaidCard" value=""/>
@@ -198,6 +203,41 @@
                        select="\1" />
         <echo message="Paper Check created: ${hw.paperCheck2Token}"/>
         <fail unless="hw.paperCheck2Token"/>
+    </target>
+
+    <target name="createTransfer" if="hw.userToken, hw.paperCheck2Token">
+        <local name="touchTime"/>
+        <tstamp>
+            <format property="touchTime" pattern="yyyyMMddhhmmss"/>
+        </tstamp>
+        <loadfile
+                property="createTransferBody"
+                srcFile="curl-templates/create-transfer.json">
+            <filterchain>
+                <expandproperties/>
+            </filterchain>
+        </loadfile>
+        <exec logError="true" failonerror="true" executable="curl" outputproperty="transferResp">
+            <arg value="-X"/>
+            <arg value="POST"/>
+            <arg value="https://api.sandbox.hyperwallet.com/rest/v3/transfers"/>
+            <arg value="-u"/>
+            <arg value="${hw.username}:${hw.password}"/>
+            <arg value="-H"/>
+            <arg value="Content-Type: application/json"/>
+            <arg value="-H"/>
+            <arg value="Accept: application/json"/>
+            <arg value="-d"/>
+            <arg value="${createTransferBody}"/>
+        </exec>
+        <echo message="RESPONSE:"/>
+        <echo message="${transferResp}"/>
+        <propertyregex property="hw.transfer2Token"
+                       input="${transferResp}"
+                       regexp=".*&quot;token&quot;\s*:\s*&quot;([^&quot;]*)"
+                       select="\1" />
+        <echo message="Transfer created: ${hw.transfer2Token}"/>
+        <fail unless="hw.transfer2Token"/>
     </target>
 
     <target name="createBankAccount" if="hw.userToken">
@@ -591,6 +631,81 @@
         </fail>
     </target>
 
+    <!--           -->
+    <!-- TRANSFERS -->
+    <!--           -->
+
+    <target name="stepCreateTransfer" depends="createUser, createPayment, createPaperCheck">
+        <local name="out"/>
+        <exec logError="true" failonerror="true" executable="${runStepCommand}" outputproperty="out" dir="${stepsDir}">
+            <arg line="${runStepCommandArgs} ${stepName_createTransfer} ${hw.username} ${hw.password} ${hw.programToken} ${hw.userToken} ${hw.paperCheck2Token}"/>
+        </exec>
+        <echo message="RESPONSE:"/>
+        <echo message="${out}"/>
+        <propertyregex property="hw.transfer2Token"
+                       input="${out}"
+                       regexp=".*&quot;token&quot;\s*:\s*&quot;([^&quot;]*)"
+                       select="\1" />
+        <echo message="Transfer created: ${hw.transfer2Token}"/>
+        <fail unless="hw.transfer2Token"/>
+    </target>
+
+    <target name="stepGetTransfer" depends="stepCreateTransfer">
+        <local name="out"/>
+        <exec logError="true" failonerror="true" executable="${runStepCommand}" outputproperty="out" dir="${stepsDir}">
+            <arg line="${runStepCommandArgs} ${stepName_getTransfer} ${hw.username} ${hw.password} ${hw.programToken} ${hw.transfer2Token}"/>
+        </exec>
+        <echo message="RESPONSE:"/>
+        <echo message="${out}"/>
+        <propertyregex property="hw.destinationToken"
+                       input="${out}"
+                       regexp=".*&quot;destinationToken&quot;\s*:\s*&quot;([^&quot;]*)"
+                       select="\1" />
+        <fail message="${hw.destinationToken} does not equal to ${hw.paperCheck2Token}">
+            <condition>
+                <not>
+                    <equals arg1="${hw.destinationToken}" arg2="${hw.paperCheck2Token}"/>
+                </not>
+            </condition>
+        </fail>
+    </target>
+
+    <target name="stepListTransfer" depends="stepCreateTransfer">
+        <local name="out"/>
+        <local name="count"/>
+        <exec logError="true" failonerror="true" executable="${runStepCommand}" outputproperty="out" dir="${stepsDir}">
+            <arg line="${runStepCommandArgs} ${stepName_listTransfer} ${hw.username} ${hw.password} ${hw.programToken} ${hw.userToken}"/>
+        </exec>
+        <echo message="RESPONSE:"/>
+        <echo message="${out}"/>
+        <propertyregex property="count"
+                       input="${out}"
+                       regexp=".*&quot;count&quot;\s*:\s*([0-9]*)"
+                       select="\1" />
+        <fail message="${count} does not equal to 1">
+            <condition>
+                <not>
+                    <equals arg1="${count}" arg2="1"/>
+                </not>
+            </condition>
+        </fail>
+    </target>
+
+    <target name="stepCreateTransferStatusTransition" depends="stepCreateTransfer">
+        <local name="out"/>
+        <exec logError="true" failonerror="true" executable="${runStepCommand}" outputproperty="out" dir="${stepsDir}">
+            <arg line="${runStepCommandArgs} ${stepName_createTransferStatusTransition} ${hw.username} ${hw.password} ${hw.programToken} ${hw.transfer2Token}"/>
+        </exec>
+        <echo message="RESPONSE:"/>
+        <echo message="${out}"/>
+        <propertyregex property="hw.transferStatusTransitionToken"
+                       input="${out}"
+                       regexp=".*&quot;token&quot;\s*:\s*&quot;([^&quot;]*)"
+                       select="\1" />
+        <echo message="Transfer Transition created: ${hw.transferStatusTransitionToken}"/>
+        <fail unless="hw.transferStatusTransitionToken"/>
+    </target>
+
     <!--              -->
     <!-- Bank Account -->
     <!--              -->
@@ -857,6 +972,9 @@
     <target name="testPaperChecks">
         <echo message="No tests"/>
     </target>
+    <target name="testTransfers">
+        <echo message="No tests"/>
+    </target>
     <target name="testBankAccounts">
         <echo message="No tests"/>
     </target>
@@ -871,7 +989,7 @@
         <echo message="No tests"/>
     </target>
 
-    <target name="testApi" depends="testBankCards, testPaperChecks, testBankAccounts, testPrepaidCards, testPayments, testUser"/>
+    <target name="testApi" depends="testBankCards, testPaperChecks, testTransfers, testBankAccounts, testPrepaidCards, testPayments, testUser"/>
 
     <target name="dist" depends="init, testApi"/>
 
