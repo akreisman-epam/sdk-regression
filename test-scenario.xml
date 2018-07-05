@@ -39,6 +39,10 @@
     <property name="stepName_listTransfer" value=""/>
     <property name="stepName_createTransferStatusTransition" value=""/>
 
+    <property name="stepName_createPayPalAccount" value=""/>
+    <property name="stepName_getPayPalAccount" value=""/>
+    <property name="stepName_listPayPalAccount" value=""/>
+
     <property name="stepName_getBankAccountStatusTransition" value=""/>
 
     <property name="stepName_updatePrepaidCard" value=""/>
@@ -105,6 +109,10 @@
         </exec>
         <echo message="RESPONSE:"/>
         <echo message="${userResp}"/>
+        <propertyregex property="hw.userEmail"
+                       input="${userResp}"
+                       regexp=".*&quot;email&quot;\s*:\s*&quot;([^&quot;]*)"
+                       select="\1" />
         <propertyregex property="hw.userToken"
                        input="${userResp}"
                        regexp=".*&quot;token&quot;\s*:\s*&quot;([^&quot;]*)"
@@ -240,6 +248,37 @@
         <fail unless="hw.transfer2Token"/>
     </target>
 
+    <target name="createPayPalAccount" if="hw.userToken, hw.userEmail">
+        <loadfile
+                property="createPayPalAccountBody"
+                srcFile="curl-templates/create-paypal-account.json">
+            <filterchain>
+                <expandproperties/>
+            </filterchain>
+        </loadfile>
+        <exec logError="true" failonerror="true" executable="curl" outputproperty="payPalAccountResp">
+            <arg value="-X"/>
+            <arg value="POST"/>
+            <arg value="https://api.sandbox.hyperwallet.com/rest/v3/users/${hw.userToken}/paypal-accounts"/>
+            <arg value="-u"/>
+            <arg value="${hw.username}:${hw.password}"/>
+            <arg value="-H"/>
+            <arg value="Content-Type: application/json"/>
+            <arg value="-H"/>
+            <arg value="Accept: application/json"/>
+            <arg value="-d"/>
+            <arg value="${createPayPalAccountBody}"/>
+        </exec>
+        <echo message="RESPONSE:"/>
+        <echo message="${payPalAccountResp}"/>
+        <propertyregex property="hw.payPalAccount2Token"
+                       input="${payPalAccountResp}"
+                       regexp=".*&quot;token&quot;\s*:\s*&quot;([^&quot;]*)"
+                       select="\1" />
+        <echo message="PayPal account created: ${hw.payPalAccount2Token}"/>
+        <fail unless="hw.payPalAccount2Token"/>
+    </target>
+
     <target name="createBankAccount" if="hw.userToken">
         <local name="touchTime"/>
         <tstamp>
@@ -308,6 +347,41 @@
                        select="\1" />
         <echo message="Payment created: ${hw.paymentToken}"/>
         <fail unless="hw.paymentToken"/>
+    </target>
+
+    <target name="createPaymentForTransfer" if="hw.userToken">
+        <local name="touchTime"/>
+        <tstamp>
+            <format property="touchTime" pattern="yyyy-MM-dd'T'hh:mm:ss" offset="3" unit="month"/>
+        </tstamp>
+        <loadfile
+                property="createPaymentForTransferBody"
+                srcFile="curl-templates/create-payment-for-transfer.json">
+            <filterchain>
+                <expandproperties/>
+            </filterchain>
+        </loadfile>
+        <exec logError="true" failonerror="true" executable="curl" outputproperty="paymentForTransferResp">
+            <arg value="-X"/>
+            <arg value="POST"/>
+            <arg value="https://api.sandbox.hyperwallet.com/rest/v3/payments"/>
+            <arg value="-u"/>
+            <arg value="${hw.username}:${hw.password}"/>
+            <arg value="-H"/>
+            <arg value="Content-Type: application/json"/>
+            <arg value="-H"/>
+            <arg value="Accept: application/json"/>
+            <arg value="-d"/>
+            <arg value="${createPaymentForTransferBody}"/>
+        </exec>
+        <echo message="RESPONSE:"/>
+        <echo message="${paymentForTransferResp}"/>
+        <propertyregex property="hw.paymentForTransferToken"
+                       input="${paymentForTransferResp}"
+                       regexp=".*&quot;token&quot;\s*:\s*&quot;([^&quot;]*)"
+                       select="\1" />
+        <echo message="Payment created: ${hw.paymentForTransferToken}"/>
+        <fail unless="hw.paymentForTransferToken"/>
     </target>
 
     <!--            -->
@@ -635,10 +709,10 @@
     <!-- TRANSFERS -->
     <!--           -->
 
-    <target name="stepCreateTransfer" depends="createUser, createPayment, createPaperCheck">
+    <target name="stepCreateTransfer" depends="createUser, createPaymentForTransfer, stepCreatePaperCheck">
         <local name="out"/>
         <exec logError="true" failonerror="true" executable="${runStepCommand}" outputproperty="out" dir="${stepsDir}">
-            <arg line="${runStepCommandArgs} ${stepName_createTransfer} ${hw.username} ${hw.password} ${hw.programToken} ${hw.userToken} ${hw.paperCheck2Token}"/>
+            <arg line="${runStepCommandArgs} ${stepName_createTransfer} ${hw.username} ${hw.password} ${hw.programToken} ${hw.userToken} ${hw.paperCheckToken}"/>
         </exec>
         <echo message="RESPONSE:"/>
         <echo message="${out}"/>
@@ -661,10 +735,10 @@
                        input="${out}"
                        regexp=".*&quot;destinationToken&quot;\s*:\s*&quot;([^&quot;]*)"
                        select="\1" />
-        <fail message="${hw.destinationToken} does not equal to ${hw.paperCheck2Token}">
+        <fail message="${hw.destinationToken} does not equal to ${hw.paperCheckToken}">
             <condition>
                 <not>
-                    <equals arg1="${hw.destinationToken}" arg2="${hw.paperCheck2Token}"/>
+                    <equals arg1="${hw.destinationToken}" arg2="${hw.paperCheckToken}"/>
                 </not>
             </condition>
         </fail>
@@ -684,8 +758,22 @@
                        select="\1" />
         <fail message="${count} does not equal to 1">
             <condition>
+                <and>
+                    <istrue value="${count}"/>
+                    <not>
+                        <equals arg1="${count}" arg2="1"/>
+                    </not>
+                </and>
+            </condition>
+        </fail>
+        <propertyregex property="transferToken"
+                       input="${out}"
+                       regexp=".+(${hw.transfer2Token})"
+                       select="\1" />
+        <fail message="${transferToken} does not equal to ${hw.transfer2Token}">
+            <condition>
                 <not>
-                    <equals arg1="${count}" arg2="1"/>
+                    <equals arg1="${transferToken}" arg2="${hw.transfer2Token}"/>
                 </not>
             </condition>
         </fail>
@@ -704,6 +792,81 @@
                        select="\1" />
         <echo message="Transfer Transition created: ${hw.transferStatusTransitionToken}"/>
         <fail unless="hw.transferStatusTransitionToken"/>
+    </target>
+
+    <!--                 -->
+    <!-- PAYPAL ACCOUNTS -->
+    <!--                 -->
+
+    <target name="stepCreatePayPalAccount" depends="createUser">
+        <local name="out"/>
+        <exec logError="true" failonerror="true" executable="${runStepCommand}" outputproperty="out" dir="${stepsDir}">
+            <arg line="${runStepCommandArgs} ${stepName_createPayPalAccount} ${hw.username} ${hw.password} ${hw.programToken} ${hw.userToken} ${hw.userEmail}"/>
+        </exec>
+        <echo message="RESPONSE:"/>
+        <echo message="${out}"/>
+        <propertyregex property="hw.payPalAccountToken"
+                       input="${out}"
+                       regexp=".*&quot;token&quot;\s*:\s*&quot;([^&quot;]*)"
+                       select="\1" />
+        <echo message="PayPal account created: ${hw.payPalAccountToken}"/>
+        <fail unless="hw.payPalAccountToken"/>
+    </target>
+
+    <target name="stepGetPayPalAccount" depends="stepCreatePayPalAccount">
+        <local name="out"/>
+        <local name="payPalAccountType"/>
+        <exec logError="true" failonerror="true" executable="${runStepCommand}" outputproperty="out" dir="${stepsDir}">
+            <arg line="${runStepCommandArgs} ${stepName_getPayPalAccount} ${hw.username} ${hw.password} ${hw.programToken} ${hw.userToken} ${hw.payPalAccountToken}"/>
+        </exec>
+        <echo message="RESPONSE:"/>
+        <echo message="${out}"/>
+        <propertyregex property="payPalAccountType"
+                       input="${out}"
+                       regexp=".*&quot;type&quot;\s*:\s*&quot;([^&quot;]*)"
+                       select="\1" />
+        <fail message="${payPalAccountType} does not equal to PAYPAL_ACCOUNT">
+            <condition>
+                <not>
+                    <equals arg1="${payPalAccountType}" arg2="PAYPAL_ACCOUNT"/>
+                </not>
+            </condition>
+        </fail>
+    </target>
+
+    <target name="stepListPayPalAccount" depends="stepCreatePayPalAccount">
+        <local name="out"/>
+        <local name="count"/>
+        <exec logError="true" failonerror="true" executable="${runStepCommand}" outputproperty="out" dir="${stepsDir}">
+            <arg line="${runStepCommandArgs} ${stepName_listPayPalAccount} ${hw.username} ${hw.password} ${hw.programToken} ${hw.userToken}"/>
+        </exec>
+        <echo message="RESPONSE:"/>
+        <echo message="${out}"/>
+        <propertyregex property="count"
+                       input="${out}"
+                       regexp=".*&quot;count&quot;\s*:\s*([0-9]*)"
+                       select="\1" />
+        <fail message="${count} does not equal to 1">
+            <condition>
+                <and>
+                    <istrue value="${count}"/>
+                    <not>
+                        <equals arg1="${count}" arg2="1"/>
+                    </not>
+                </and>
+            </condition>
+        </fail>
+        <propertyregex property="payPalToken"
+                       input="${out}"
+                       regexp=".+(${hw.payPalAccountToken})"
+                       select="\1" />
+        <fail message="${payPalToken} does not equal to ${hw.payPalAccountToken}">
+            <condition>
+                <not>
+                    <equals arg1="${payPalToken}" arg2="${hw.payPalAccountToken}"/>
+                </not>
+            </condition>
+        </fail>
     </target>
 
     <!--              -->
@@ -975,6 +1138,9 @@
     <target name="testTransfers">
         <echo message="No tests"/>
     </target>
+    <target name="testPayPalAccounts">
+        <echo message="No tests"/>
+    </target>
     <target name="testBankAccounts">
         <echo message="No tests"/>
     </target>
@@ -989,7 +1155,7 @@
         <echo message="No tests"/>
     </target>
 
-    <target name="testApi" depends="testBankCards, testPaperChecks, testTransfers, testBankAccounts, testPrepaidCards, testPayments, testUser"/>
+    <target name="testApi" depends="testBankCards, testTransfers, testPaperChecks, testPayPalAccounts, testBankAccounts, testPrepaidCards, testPayments, testUser"/>
 
     <target name="dist" depends="init, testApi"/>
 

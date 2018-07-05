@@ -1,0 +1,6 @@
+{
+  "type": "PAYPAL_ACCOUNT",
+  "transferMethodCountry": "US",
+  "transferMethodCurrency": "USD",
+  "email": "{hw.userEmail}"
+}

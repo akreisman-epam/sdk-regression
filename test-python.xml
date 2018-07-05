@@ -13,11 +13,16 @@
     <property name="stepName_updatePrepaidCard" value="updatePrepaidCard.py"/>
     <property name="stepName_getUserStatusTransition" value="getUserStatusTransition.py"/>
     <property name="stepName_listUserStatusTransitions" value="listUserStatusTransition.py"/>
+    <property name="stepName_createPaperCheck" value="createPaperCheck.py"/>
 
     <property name="stepName_createTransfer" value="transfer/createTransfer.py"/>
     <property name="stepName_getTransfer" value="transfer/getTransfer.py"/>
     <property name="stepName_listTransfer" value="transfer/listTransfers.py"/>
     <property name="stepName_createTransferStatusTransition" value="transfer/createTransferStatusTransition.py"/>
+
+    <property name="stepName_createPayPalAccount" value="paypalaccount/createPayPalAccount.py"/>
+    <property name="stepName_getPayPalAccount" value="paypalaccount/getPayPalAccount.py"/>
+    <property name="stepName_listPayPalAccount" value="paypalaccount/listPayPalAccounts.py"/>
 
     <import file="test-scenario.xml"/>
 
@@ -34,6 +39,9 @@
         <echo message="Ok"/>
     </target>
     <target name="testTransfers" depends="stepCreateTransfer, stepGetTransfer, stepListTransfer, stepCreateTransferStatusTransition">
+        <echo message="Ok"/>
+    </target>
+    <target name="testPayPalAccounts" depends="stepCreatePayPalAccount, stepGetPayPalAccount, stepListPayPalAccount">
         <echo message="Ok"/>
     </target>
     <target name="testPrepaidCards" depends="stepUpdatePrepaidCard">

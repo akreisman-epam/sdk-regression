@@ -32,6 +32,10 @@
     <property name="stepName_listTransfer" value="com.hyperwallet.example.transfer.ListTransfers"/>
     <property name="stepName_createTransferStatusTransition" value="com.hyperwallet.example.transfer.CreateTransferStatusTransition"/>
 
+    <property name="stepName_createPayPalAccount" value="com.hyperwallet.example.paypalaccount.CreatePayPalAccount"/>
+    <property name="stepName_getPayPalAccount" value="com.hyperwallet.example.paypalaccount.RetrievePayPalAccount"/>
+    <property name="stepName_listPayPalAccount" value="com.hyperwallet.example.paypalaccount.ListPayPalAccounts"/>
+
     <property name="stepName_createPaymentStatusTransition" value="com.hyperwallet.example.payment.CreatePaymentStatusTransition"/>
     <property name="stepName_getPaymentStatusTransition" value="com.hyperwallet.example.payment.ListPaymentStatusTransitions"/>
     <property name="stepName_listPaymentStatusTransitions" value="com.hyperwallet.example.payment.RetrievePaymentStatusTransition"/>
@@ -57,6 +61,9 @@
         </exec>
     </target>
 
+    <target name="testPayPalAccounts" depends="stepCreatePayPalAccount, stepGetPayPalAccount, stepListPayPalAccount">
+        <echo message="Ok"/>
+    </target>
     <target name="testTransfers" depends="stepCreateTransfer, stepGetTransfer, stepListTransfer, stepCreateTransferStatusTransition">
         <echo message="Ok"/>
     </target>

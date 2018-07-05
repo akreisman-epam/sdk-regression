@@ -32,6 +32,10 @@
     <property name="stepName_listTransfer" value="src/transfer/list-transfers.php"/>
     <property name="stepName_createTransferStatusTransition" value="src/transfer/create-transfer-transition.php"/>
 
+    <property name="stepName_createPayPalAccount" value="src/paypalaccount/create-paypal-account.php"/>
+    <property name="stepName_getPayPalAccount" value="src/paypalaccount/get-paypal-account.php"/>
+    <property name="stepName_listPayPalAccount" value="src/paypalaccount/list-paypal-accounts.php"/>
+
     <property name="stepName_getBankAccountStatusTransition" value="src/bankaccount/get-bank-account-transition.php"/>
 
     <property name="stepName_createPaymentStatusTransition" value="src/payment/create-payment-transition.php"/>
@@ -59,6 +63,9 @@
         <echo message="Ok"/>
     </target>
     <target name="testTransfers" depends="stepCreateTransfer, stepGetTransfer, stepListTransfer, stepCreateTransferStatusTransition">
+        <echo message="Ok"/>
+    </target>
+    <target name="testPayPalAccounts" depends="stepCreatePayPalAccount, stepGetPayPalAccount, stepListPayPalAccount">
         <echo message="Ok"/>
     </target>
     <target name="testBankAccounts" depends="stepGetBankAccountStatusTransition">
