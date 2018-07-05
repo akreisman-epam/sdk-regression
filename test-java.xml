@@ -27,6 +27,11 @@
     <property name="stepName_getPaperCheckStatusTransition" value="com.hyperwallet.example.papercheck.RetrievePaperCheckStatusTransition"/>
     <property name="stepName_listPaperCheckStatusTransitions" value="com.hyperwallet.example.papercheck.ListPaperCheckStatusTransitions"/>
 
+    <property name="stepName_createTransfer" value="com.hyperwallet.example.transfer.CreateTransfer"/>
+    <property name="stepName_getTransfer" value="com.hyperwallet.example.transfer.RetrieveTransfer"/>
+    <property name="stepName_listTransfer" value="com.hyperwallet.example.transfer.ListTransfers"/>
+    <property name="stepName_createTransferStatusTransition" value="com.hyperwallet.example.transfer.CreateTransferStatusTransition"/>
+
     <property name="stepName_createPaymentStatusTransition" value="com.hyperwallet.example.payment.CreatePaymentStatusTransition"/>
     <property name="stepName_getPaymentStatusTransition" value="com.hyperwallet.example.payment.ListPaymentStatusTransitions"/>
     <property name="stepName_listPaymentStatusTransitions" value="com.hyperwallet.example.payment.RetrievePaymentStatusTransition"/>
@@ -52,6 +57,9 @@
         </exec>
     </target>
 
+    <target name="testTransfers" depends="stepCreateTransfer, stepGetTransfer, stepListTransfer, stepCreateTransferStatusTransition">
+        <echo message="Ok"/>
+    </target>
     <target name="testBankCards" depends="stepCreateBankCard, stepGetBankCard, stepListBankCard, stepUpdateBankCard, stepDeactivateBankCard, stepCreateBankCardStatusTransition, stepGetBankCardStatusTransition, stepListBankCardStatusTransition">
         <echo message="Ok"/>
     </target>

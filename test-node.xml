@@ -27,6 +27,11 @@
     <property name="stepName_getPaperCheckStatusTransition" value="src/papercheck/get-paper-check-transition.js"/>
     <property name="stepName_listPaperCheckStatusTransitions" value="src/papercheck/list-paper-check-transitions.js"/>
 
+    <property name="stepName_createTransfer" value="src/transfer/create-transfer.js"/>
+    <property name="stepName_getTransfer" value="src/transfer/get-transfer.js"/>
+    <property name="stepName_listTransfer" value="src/transfer/list-transfers.js"/>
+    <property name="stepName_createTransferStatusTransition" value="src/transfer/create-transfer-transition.js"/>
+
     <property name="stepName_getBankAccountStatusTransition" value="src/bankaccount/get-bank-account-transition.js"/>
 
     <property name="stepName_createPaymentStatusTransition" value="src/payment/create-payment-transition.js"/>
@@ -55,6 +60,9 @@
         <echo message="Ok"/>
     </target>
     <target name="testPaperChecks" depends="stepCreatePaperCheck, stepGetPaperCheck, stepListPaperCheck, stepUpdatePaperCheck, stepDeactivatePaperCheck, stepCreatePaperCheckStatusTransition, stepGetPaperCheckStatusTransition, stepListPaperCheckStatusTransition">
+        <echo message="Ok"/>
+    </target>
+    <target name="testTransfers" depends="stepCreateTransfer, stepGetTransfer, stepListTransfer, stepCreateTransferStatusTransition">
         <echo message="Ok"/>
     </target>
     <target name="testBankAccounts" depends="stepGetBankAccountStatusTransition">

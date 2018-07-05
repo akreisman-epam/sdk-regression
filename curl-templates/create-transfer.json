@@ -1,0 +1,5 @@
+{
+  "clientTransferId": "${touchTime}",
+  "sourceToken": "${hw.userToken}",
+  "destinationToken": "${hw.paperCheck2Token}"
+}
