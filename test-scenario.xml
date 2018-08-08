@@ -57,6 +57,9 @@
     <property name="hw.username" value="--should-be-overridden--"/>
     <property name="hw.password" value="--should-be-overridden--"/>
     <property name="hw.programToken" value="--should-be-overridden--"/>
+    <property name="hw.usernameWithEncryption" value="--should-be-overridden--"/>
+    <var name="hw.currentUsername" value="--should-be-overridden--"/>
+    <var name="hw.encryptionEnabled" value="false"/>
 
     <target name="clean">
         <delete dir="${distDir}"/>
@@ -391,7 +394,7 @@
     <target name="stepCreateBankCard" depends="createUser">
         <local name="out"/>
         <exec logError="true" failonerror="true" executable="${runStepCommand}" outputproperty="out" dir="${stepsDir}">
-            <arg line="${runStepCommandArgs} ${stepName_createBankCard} ${hw.username} ${hw.password} ${hw.programToken} ${hw.userToken} 4216701111102221"/>
+            <arg line="${runStepCommandArgs} ${stepName_createBankCard} ${hw.currentUsername} ${hw.password} ${hw.programToken} ${hw.userToken} 4216701111102221 ${hw.encryptionEnabled}"/>
         </exec>
         <echo message="RESPONSE:"/>
         <echo message="${out}"/>
@@ -407,7 +410,7 @@
         <local name="out"/>
         <local name="bankCardType"/>
         <exec logError="true" failonerror="true" executable="${runStepCommand}" outputproperty="out" dir="${stepsDir}">
-            <arg line="${runStepCommandArgs} ${stepName_getBankCard} ${hw.username} ${hw.password} ${hw.programToken} ${hw.userToken} ${hw.bankCardToken}"/>
+            <arg line="${runStepCommandArgs} ${stepName_getBankCard} ${hw.currentUsername} ${hw.password} ${hw.programToken} ${hw.userToken} ${hw.bankCardToken} ${hw.encryptionEnabled}"/>
         </exec>
         <echo message="RESPONSE:"/>
         <echo message="${out}"/>
@@ -428,7 +431,7 @@
         <local name="out"/>
         <local name="count"/>
         <exec logError="true" failonerror="true" executable="${runStepCommand}" outputproperty="out" dir="${stepsDir}">
-            <arg line="${runStepCommandArgs} ${stepName_listBankCard} ${hw.username} ${hw.password} ${hw.programToken} ${hw.userToken}"/>
+            <arg line="${runStepCommandArgs} ${stepName_listBankCard} ${hw.currentUsername} ${hw.password} ${hw.programToken} ${hw.userToken} ${hw.encryptionEnabled}"/>
         </exec>
         <echo message="RESPONSE:"/>
         <echo message="${out}"/>
@@ -449,7 +452,7 @@
         <local name="out"/>
         <local name="dateOfExpiry"/>
         <exec logError="true" failonerror="true" executable="${runStepCommand}" outputproperty="out" dir="${stepsDir}">
-            <arg line="${runStepCommandArgs} ${stepName_updateBankCard} ${hw.username} ${hw.password} ${hw.programToken} ${hw.userToken} ${hw.bankCardToken} 2030-12"/>
+            <arg line="${runStepCommandArgs} ${stepName_updateBankCard} ${hw.currentUsername} ${hw.password} ${hw.programToken} ${hw.userToken} ${hw.bankCardToken} 2030-12 ${hw.encryptionEnabled}"/>
         </exec>
         <echo message="RESPONSE:"/>
         <echo message="${out}"/>
@@ -470,7 +473,7 @@
         <local name="out"/>
         <local name="toStatus"/>
         <exec logError="true" failonerror="true" executable="${runStepCommand}" outputproperty="out" dir="${stepsDir}">
-            <arg line="${runStepCommandArgs} ${stepName_deactivateBankCard} ${hw.username} ${hw.password} ${hw.programToken} ${hw.userToken} ${hw.bankCardToken}"/>
+            <arg line="${runStepCommandArgs} ${stepName_deactivateBankCard} ${hw.currentUsername} ${hw.password} ${hw.programToken} ${hw.userToken} ${hw.bankCardToken} ${hw.encryptionEnabled}"/>
         </exec>
         <echo message="RESPONSE:"/>
         <echo message="${out}"/>
@@ -490,7 +493,7 @@
     <target name="stepCreateBankCardStatusTransition" depends="createUser, createBankCard">
         <local name="out"/>
         <exec logError="true" failonerror="true" executable="${runStepCommand}" outputproperty="out" dir="${stepsDir}">
-            <arg line="${runStepCommandArgs} ${stepName_createBankCardStatusTransition} ${hw.username} ${hw.password} ${hw.programToken} ${hw.userToken} ${hw.bankCard2Token}"/>
+            <arg line="${runStepCommandArgs} ${stepName_createBankCardStatusTransition} ${hw.currentUsername} ${hw.password} ${hw.programToken} ${hw.userToken} ${hw.bankCard2Token} ${hw.encryptionEnabled}"/>
         </exec>
         <echo message="RESPONSE:"/>
         <echo message="${out}"/>
@@ -506,7 +509,7 @@
         <local name="out"/>
         <local name="toStatus"/>
         <exec logError="true" failonerror="true" executable="${runStepCommand}" outputproperty="out" dir="${stepsDir}">
-        <arg line="${runStepCommandArgs} ${stepName_getBankCardStatusTransition} ${hw.username} ${hw.password} ${hw.programToken} ${hw.userToken} ${hw.bankCard2Token} ${hw.bankCardStatusTransitionToken}"/>
+        <arg line="${runStepCommandArgs} ${stepName_getBankCardStatusTransition} ${hw.currentUsername} ${hw.password} ${hw.programToken} ${hw.userToken} ${hw.bankCard2Token} ${hw.bankCardStatusTransitionToken} ${hw.encryptionEnabled}"/>
         </exec>
         <echo message="RESPONSE:"/>
         <echo message="${out}"/>
@@ -527,7 +530,7 @@
         <local name="out"/>
         <local name="count"/>
         <exec logError="true" failonerror="true" executable="${runStepCommand}" outputproperty="out" dir="${stepsDir}">
-        <arg line="${runStepCommandArgs} ${stepName_listBankCardStatusTransitions} ${hw.username} ${hw.password} ${hw.programToken} ${hw.userToken} ${hw.bankCard2Token}"/>
+        <arg line="${runStepCommandArgs} ${stepName_listBankCardStatusTransitions} ${hw.currentUsername} ${hw.password} ${hw.programToken} ${hw.userToken} ${hw.bankCard2Token} ${hw.encryptionEnabled}"/>
         </exec>
         <echo message="RESPONSE:"/>
         <echo message="${out}"/>
@@ -552,7 +555,7 @@
     <target name="stepCreatePaperCheck" depends="createUser">
         <local name="out"/>
         <exec logError="true" failonerror="true" executable="${runStepCommand}" outputproperty="out" dir="${stepsDir}">
-            <arg line="${runStepCommandArgs} ${stepName_createPaperCheck} ${hw.username} ${hw.password} ${hw.programToken} ${hw.userToken}"/>
+            <arg line="${runStepCommandArgs} ${stepName_createPaperCheck} ${hw.currentUsername} ${hw.password} ${hw.programToken} ${hw.userToken} ${hw.encryptionEnabled}"/>
         </exec>
         <echo message="RESPONSE:"/>
         <echo message="${out}"/>
@@ -568,7 +571,7 @@
         <local name="out"/>
         <local name="paperCheckType"/>
         <exec logError="true" failonerror="true" executable="${runStepCommand}" outputproperty="out" dir="${stepsDir}">
-            <arg line="${runStepCommandArgs} ${stepName_getPaperCheck} ${hw.username} ${hw.password} ${hw.programToken} ${hw.userToken} ${hw.paperCheckToken}"/>
+            <arg line="${runStepCommandArgs} ${stepName_getPaperCheck} ${hw.currentUsername} ${hw.password} ${hw.programToken} ${hw.userToken} ${hw.paperCheckToken} ${hw.encryptionEnabled}"/>
         </exec>
         <echo message="RESPONSE:"/>
         <echo message="${out}"/>
@@ -589,7 +592,7 @@
         <local name="out"/>
         <local name="count"/>
         <exec logError="true" failonerror="true" executable="${runStepCommand}" outputproperty="out" dir="${stepsDir}">
-            <arg line="${runStepCommandArgs} ${stepName_listPaperCheck} ${hw.username} ${hw.password} ${hw.programToken} ${hw.userToken}"/>
+            <arg line="${runStepCommandArgs} ${stepName_listPaperCheck} ${hw.currentUsername} ${hw.password} ${hw.programToken} ${hw.userToken} ${hw.encryptionEnabled}"/>
         </exec>
         <echo message="RESPONSE:"/>
         <echo message="${out}"/>
@@ -610,7 +613,7 @@
         <local name="out"/>
         <local name="addressLine1"/>
         <exec logError="true" failonerror="true" executable="${runStepCommand}" outputproperty="out" dir="${stepsDir}">
-            <arg line="${runStepCommandArgs} ${stepName_updatePaperCheck} ${hw.username} ${hw.password} ${hw.programToken} ${hw.userToken} ${hw.paperCheckToken} SomeAddress"/>
+            <arg line="${runStepCommandArgs} ${stepName_updatePaperCheck} ${hw.currentUsername} ${hw.password} ${hw.programToken} ${hw.userToken} ${hw.paperCheckToken} SomeAddress ${hw.encryptionEnabled}"/>
         </exec>
         <echo message="RESPONSE:"/>
         <echo message="${out}"/>
@@ -631,7 +634,7 @@
         <local name="out"/>
         <local name="toStatus"/>
         <exec logError="true" failonerror="true" executable="${runStepCommand}" outputproperty="out" dir="${stepsDir}">
-            <arg line="${runStepCommandArgs} ${stepName_deactivatePaperCheck} ${hw.username} ${hw.password} ${hw.programToken} ${hw.userToken} ${hw.paperCheckToken}"/>
+            <arg line="${runStepCommandArgs} ${stepName_deactivatePaperCheck} ${hw.currentUsername} ${hw.password} ${hw.programToken} ${hw.userToken} ${hw.paperCheckToken} ${hw.encryptionEnabled}"/>
         </exec>
         <echo message="RESPONSE:"/>
         <echo message="${out}"/>
@@ -651,7 +654,7 @@
     <target name="stepCreatePaperCheckStatusTransition" depends="createUser, createPaperCheck">
         <local name="out"/>
         <exec logError="true" failonerror="true" executable="${runStepCommand}" outputproperty="out" dir="${stepsDir}">
-            <arg line="${runStepCommandArgs} ${stepName_createPaperCheckStatusTransition} ${hw.username} ${hw.password} ${hw.programToken} ${hw.userToken} ${hw.paperCheck2Token}"/>
+            <arg line="${runStepCommandArgs} ${stepName_createPaperCheckStatusTransition} ${hw.currentUsername} ${hw.password} ${hw.programToken} ${hw.userToken} ${hw.paperCheck2Token} ${hw.encryptionEnabled}"/>
         </exec>
         <echo message="RESPONSE:"/>
         <echo message="${out}"/>
@@ -667,7 +670,7 @@
         <local name="out"/>
         <local name="toStatus"/>
         <exec logError="true" failonerror="true" executable="${runStepCommand}" outputproperty="out" dir="${stepsDir}">
-            <arg line="${runStepCommandArgs} ${stepName_getPaperCheckStatusTransition} ${hw.username} ${hw.password} ${hw.programToken} ${hw.userToken} ${hw.paperCheck2Token} ${hw.paperCheckStatusTransitionToken}"/>
+            <arg line="${runStepCommandArgs} ${stepName_getPaperCheckStatusTransition} ${hw.currentUsername} ${hw.password} ${hw.programToken} ${hw.userToken} ${hw.paperCheck2Token} ${hw.paperCheckStatusTransitionToken} ${hw.encryptionEnabled}"/>
         </exec>
         <echo message="RESPONSE:"/>
         <echo message="${out}"/>
@@ -688,7 +691,7 @@
         <local name="out"/>
         <local name="count"/>
         <exec logError="true" failonerror="true" executable="${runStepCommand}" outputproperty="out" dir="${stepsDir}">
-            <arg line="${runStepCommandArgs} ${stepName_listPaperCheckStatusTransitions} ${hw.username} ${hw.password} ${hw.programToken} ${hw.userToken} ${hw.paperCheck2Token}"/>
+            <arg line="${runStepCommandArgs} ${stepName_listPaperCheckStatusTransitions} ${hw.currentUsername} ${hw.password} ${hw.programToken} ${hw.userToken} ${hw.paperCheck2Token} ${hw.encryptionEnabled}"/>
         </exec>
         <echo message="RESPONSE:"/>
         <echo message="${out}"/>
@@ -712,7 +715,7 @@
     <target name="stepCreateTransfer" depends="createUser, createPaymentForTransfer, stepCreatePaperCheck">
         <local name="out"/>
         <exec logError="true" failonerror="true" executable="${runStepCommand}" outputproperty="out" dir="${stepsDir}">
-            <arg line="${runStepCommandArgs} ${stepName_createTransfer} ${hw.username} ${hw.password} ${hw.programToken} ${hw.userToken} ${hw.paperCheckToken}"/>
+            <arg line="${runStepCommandArgs} ${stepName_createTransfer} ${hw.currentUsername} ${hw.password} ${hw.programToken} ${hw.userToken} ${hw.paperCheckToken} ${hw.encryptionEnabled}"/>
         </exec>
         <echo message="RESPONSE:"/>
         <echo message="${out}"/>
@@ -727,7 +730,7 @@
     <target name="stepGetTransfer" depends="stepCreateTransfer">
         <local name="out"/>
         <exec logError="true" failonerror="true" executable="${runStepCommand}" outputproperty="out" dir="${stepsDir}">
-            <arg line="${runStepCommandArgs} ${stepName_getTransfer} ${hw.username} ${hw.password} ${hw.programToken} ${hw.transfer2Token}"/>
+            <arg line="${runStepCommandArgs} ${stepName_getTransfer} ${hw.currentUsername} ${hw.password} ${hw.programToken} ${hw.transfer2Token} ${hw.encryptionEnabled}"/>
         </exec>
         <echo message="RESPONSE:"/>
         <echo message="${out}"/>
@@ -748,7 +751,7 @@
         <local name="out"/>
         <local name="count"/>
         <exec logError="true" failonerror="true" executable="${runStepCommand}" outputproperty="out" dir="${stepsDir}">
-            <arg line="${runStepCommandArgs} ${stepName_listTransfer} ${hw.username} ${hw.password} ${hw.programToken} ${hw.userToken}"/>
+            <arg line="${runStepCommandArgs} ${stepName_listTransfer} ${hw.currentUsername} ${hw.password} ${hw.programToken} ${hw.userToken} ${hw.encryptionEnabled}"/>
         </exec>
         <echo message="RESPONSE:"/>
         <echo message="${out}"/>
@@ -782,7 +785,7 @@
     <target name="stepCreateTransferStatusTransition" depends="stepCreateTransfer">
         <local name="out"/>
         <exec logError="true" failonerror="true" executable="${runStepCommand}" outputproperty="out" dir="${stepsDir}">
-            <arg line="${runStepCommandArgs} ${stepName_createTransferStatusTransition} ${hw.username} ${hw.password} ${hw.programToken} ${hw.transfer2Token}"/>
+            <arg line="${runStepCommandArgs} ${stepName_createTransferStatusTransition} ${hw.currentUsername} ${hw.password} ${hw.programToken} ${hw.transfer2Token} ${hw.encryptionEnabled}"/>
         </exec>
         <echo message="RESPONSE:"/>
         <echo message="${out}"/>
@@ -801,7 +804,7 @@
     <target name="stepCreatePayPalAccount" depends="createUser">
         <local name="out"/>
         <exec logError="true" failonerror="true" executable="${runStepCommand}" outputproperty="out" dir="${stepsDir}">
-            <arg line="${runStepCommandArgs} ${stepName_createPayPalAccount} ${hw.username} ${hw.password} ${hw.programToken} ${hw.userToken} ${hw.userEmail}"/>
+            <arg line="${runStepCommandArgs} ${stepName_createPayPalAccount} ${hw.currentUsername} ${hw.password} ${hw.programToken} ${hw.userToken} ${hw.userEmail} ${hw.encryptionEnabled}"/>
         </exec>
         <echo message="RESPONSE:"/>
         <echo message="${out}"/>
@@ -817,7 +820,7 @@
         <local name="out"/>
         <local name="payPalAccountType"/>
         <exec logError="true" failonerror="true" executable="${runStepCommand}" outputproperty="out" dir="${stepsDir}">
-            <arg line="${runStepCommandArgs} ${stepName_getPayPalAccount} ${hw.username} ${hw.password} ${hw.programToken} ${hw.userToken} ${hw.payPalAccountToken}"/>
+            <arg line="${runStepCommandArgs} ${stepName_getPayPalAccount} ${hw.currentUsername} ${hw.password} ${hw.programToken} ${hw.userToken} ${hw.payPalAccountToken} ${hw.encryptionEnabled}"/>
         </exec>
         <echo message="RESPONSE:"/>
         <echo message="${out}"/>
@@ -838,7 +841,7 @@
         <local name="out"/>
         <local name="count"/>
         <exec logError="true" failonerror="true" executable="${runStepCommand}" outputproperty="out" dir="${stepsDir}">
-            <arg line="${runStepCommandArgs} ${stepName_listPayPalAccount} ${hw.username} ${hw.password} ${hw.programToken} ${hw.userToken}"/>
+            <arg line="${runStepCommandArgs} ${stepName_listPayPalAccount} ${hw.currentUsername} ${hw.password} ${hw.programToken} ${hw.userToken} ${hw.encryptionEnabled}"/>
         </exec>
         <echo message="RESPONSE:"/>
         <echo message="${out}"/>
@@ -901,7 +904,7 @@
                        select="\1" />
         <echo message="Bank Account Status Transaction created: ${hw.bankAccountStatusTransitionToken}"/>
         <exec logError="true" failonerror="true" executable="${runStepCommand}" outputproperty="out" dir="${stepsDir}">
-            <arg line="${runStepCommandArgs} ${stepName_getBankAccountStatusTransition} ${hw.username} ${hw.password} ${hw.programToken} ${hw.userToken} ${hw.bankAccountToken} ${hw.bankAccountStatusTransitionToken}"/>
+            <arg line="${runStepCommandArgs} ${stepName_getBankAccountStatusTransition} ${hw.currentUsername} ${hw.password} ${hw.programToken} ${hw.userToken} ${hw.bankAccountToken} ${hw.bankAccountStatusTransitionToken} ${hw.encryptionEnabled}"/>
         </exec>
         <echo message="RESPONSE:"/>
         <echo message="${out}"/>
@@ -1025,7 +1028,7 @@
     <target name="stepCreatePaymentStatusTransition" depends="createUser, createPayment">
         <local name="out"/>
         <exec logError="true" failonerror="true" executable="${runStepCommand}" outputproperty="out" dir="${stepsDir}">
-            <arg line="${runStepCommandArgs} ${stepName_createPaymentStatusTransition} ${hw.username} ${hw.password} ${hw.programToken} ${hw.paymentToken}"/>
+            <arg line="${runStepCommandArgs} ${stepName_createPaymentStatusTransition} ${hw.currentUsername} ${hw.password} ${hw.programToken} ${hw.paymentToken} ${hw.encryptionEnabled}"/>
         </exec>
         <echo message="RESPONSE:"/>
         <echo message="${out}"/>
@@ -1086,7 +1089,7 @@
         <local name="out"/>
         <local name="count"/>
         <exec logError="true" failonerror="true" executable="${runStepCommand}" outputproperty="out" dir="${stepsDir}">
-            <arg line="${runStepCommandArgs} ${stepName_listUserStatusTransitions} ${hw.username} ${hw.password} ${hw.programToken} ${hw.userToken} "/>
+            <arg line="${runStepCommandArgs} ${stepName_listUserStatusTransitions} ${hw.currentUsername} ${hw.password} ${hw.programToken} ${hw.userToken} ${hw.encryptionEnabled}"/>
         </exec>
         <echo message="RESPONSE:"/>
         <echo message="${out}"/>
@@ -1107,7 +1110,7 @@
         <local name="out"/>
         <local name="toStatus"/>
         <exec logError="true" failonerror="true" executable="${runStepCommand}" outputproperty="out" dir="${stepsDir}">
-            <arg line="${runStepCommandArgs} ${stepName_getUserStatusTransition} ${hw.username} ${hw.password} ${hw.programToken} ${hw.userToken} ${hw.userStatusTransitionToken}"/>
+            <arg line="${runStepCommandArgs} ${stepName_getUserStatusTransition} ${hw.currentUsername} ${hw.password} ${hw.programToken} ${hw.userToken} ${hw.userStatusTransitionToken} ${hw.encryptionEnabled}"/>
         </exec>
         <echo message="RESPONSE:"/>
         <echo message="${out}"/>
@@ -1122,6 +1125,18 @@
                 </not>
             </condition>
         </fail>
+    </target>
+
+    <target name="switchOnEncryption">
+        <var name="hw.encryptionEnabled" value="true"/>
+        <var name="hw.currentUsername" value="${hw.usernameWithEncryption}"/>
+        <var name="hw.currentContentType" value="Content-Type: application/jose+json"/>
+    </target>
+
+    <target name="switchOffEncryption">
+        <var name="hw.encryptionEnabled" value="false"/>
+        <var name="hw.currentUsername" value="${hw.username}"/>
+        <var name="hw.currentContentType" value="Content-Type: application/json"/>
     </target>
 
     <!--            -->
@@ -1155,9 +1170,25 @@
         <echo message="No tests"/>
     </target>
 
-    <target name="testApi" depends="testBankCards, testTransfers, testPaperChecks, testPayPalAccounts, testBankAccounts, testPrepaidCards, testPayments, testUser"/>
+    <target name="testApi" depends="switchOffEncryption, testBankCards, testTransfers, testPaperChecks, testPayPalAccounts, testBankAccounts, testPrepaidCards, testPayments, testUser"/>
 
-    <target name="dist" depends="init, testApi"/>
+    <target name="testApiWithEncryption" depends="switchOnEncryption, testBankCards, testTransfers, testPaperChecks, testPayPalAccounts, testBankAccounts, testPrepaidCards, testPayments, testUser"/>
+
+    <target name="distSimple" depends="init, testApi"/>
+
+    <target name="distWithEncryption" depends="init, testApiWithEncryption"/>
+
+    <target name="dist">
+        <if>
+            <equals arg1="${encrypted}" arg2="true"/>
+            <then>
+                <antcall target="distWithEncryption"/>
+            </then>
+            <else>
+                <antcall target="distSimple"/>
+            </else>
+        </if>
+    </target>
 
     <target name="init"/>
 

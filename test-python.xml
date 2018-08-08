@@ -51,6 +51,4 @@
         <echo message="Ok"/>
     </target>
 
-    <target name="dist" depends="init, testApi"/>
-
 </project>
